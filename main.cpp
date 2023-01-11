@@ -93,7 +93,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	object3d->SetModel(model);
 	object3d_2->SetModel(model2);
 	//3Dオブジェクトの位置を指定
-	object3d_2->SetPosition({ -5,5,0 });
+	object3d_2->SetPosition({ -5,-5,0 });
 
 	////////////////////////////
 	//------音声読み込み--------//
