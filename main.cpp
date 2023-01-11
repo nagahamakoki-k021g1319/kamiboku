@@ -12,6 +12,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region WindowsAPI初期化処理
 
+
 	//ポインタ
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
