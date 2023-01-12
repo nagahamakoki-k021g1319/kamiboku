@@ -275,6 +275,7 @@ void SpriteCommon::LoadTexture(uint32_t index, const std::string& fileName)
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = resDesc.MipLevels;
+	srvHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
 	srvHandle.ptr += (incrementSize * index);
 
 	// ハンドルの指す位置にシェーダーリソースビュー作成
