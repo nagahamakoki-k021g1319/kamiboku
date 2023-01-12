@@ -76,10 +76,12 @@ private: // ƒƒ“ƒo•Ï”
 
 	int ischackFlag = 0;
 
-	Object3d* object3d = nullptr;
-	Object3d* object3d_2 = nullptr;
+	Object3d* homeOBJ = nullptr;
+	Object3d* player = nullptr;
+	Object3d* zango = nullptr;
 	Model* model = nullptr;
 	Model* model2 = nullptr;
+	Model* zangoMD = nullptr;
 
 
 	int soundCheckFlag = 0;

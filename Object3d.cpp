@@ -74,14 +74,14 @@ void Object3d::PostDraw()
 Object3d* Object3d::Create()
 {
 	// 3Dオブジェクトのインスタンスを生成
-	Object3d* object3d = new Object3d();
-	if (object3d == nullptr) {
+	Object3d* homeOBJ = new Object3d();
+	if (homeOBJ == nullptr) {
 		return nullptr;
 	}
 
 	// 初期化
-	if (!object3d->Initialize()) {
-		delete object3d;
+	if (!homeOBJ->Initialize()) {
+		delete homeOBJ;
 		assert(0);
 		return nullptr;
 	}
@@ -93,7 +93,7 @@ Object3d* Object3d::Create()
 	//float trans_val = 30;
 	//object3d->position = { trans_val,trans_val,trans_val };
 
-	return object3d;
+	return homeOBJ;
 }
 
 void Object3d::SetEye(XMFLOAT3 eye)

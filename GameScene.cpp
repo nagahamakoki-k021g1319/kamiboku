@@ -7,8 +7,8 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	//3Dオブジェクト解放
-	delete object3d;
-	delete object3d_2;
+	delete homeOBJ;
+	delete player;
 
 	//3Dモデル解放
 	delete model;
@@ -62,20 +62,28 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	{
 		model = Model::LoadFromOBJ("as");
 		model2 = Model::LoadFromOBJ("as2");
+		zangoMD = Model::LoadFromOBJ("zango");
 	}
 	//3Dオブジェクト生成
 	{
-		object3d = Object3d::Create();
-		object3d_2 = Object3d::Create();
+		homeOBJ = Object3d::Create();
+		player = Object3d::Create();
+		zango = Object3d::Create();
+	}
+	// 親子設定
+	{
+		player->SetParent(homeOBJ);
 	}
 	// オブジェクトにモデルを紐づける
 	{
-		object3d->SetModel(model);
-		object3d_2->SetModel(model2);
+		homeOBJ->SetModel(model);
+		player->SetModel(model2);
+		zango->SetModel(zangoMD);
 	}
 	//3Dオブジェクトの位置を指定
 	{
-		object3d_2->SetPosition({ -5,-5,0 });
+		player->SetPosition({ 0,0,10 });
+		zango->SetScale({ 5,3.5f,5 });
 	}
 
 
@@ -90,28 +98,31 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 
 
 void GameScene::Update() {
-	object3d->Update();
 	// オブジェクト移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
 		// 現在の座標を取得
-		XMFLOAT3 position = object3d->GetPosition();
+		XMFLOAT3 rotate = homeOBJ->GetRotate();
 
 		// 移動後の座標を計算
-		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+		if (input->PushKey(DIK_UP)) { rotate.y += 0.5f; }
+		else if (input->PushKey(DIK_DOWN)) { rotate.y -= 0.5f; }
+		/*	if (input->PushKey(DIK_RIGHT)) { rotate.x += 1.0f; }
+			else if (input->PushKey(DIK_LEFT)) { rotate.x -= 1.0f; }*/
 
-		// 座標の変更を反映
-		object3d->SetPosition(position);
+			// 座標の変更を反映
+
+		homeOBJ->SetRotate(rotate);
 	}
+	homeOBJ->Update();
+	player->Update();
+	zango->Update();
 
-	object3d_2->Update();
+
 
 	//当たり判定
-	XMFLOAT3 a = object3d_2->GetPosition();
-	XMFLOAT3 b = object3d->GetPosition();
+	XMFLOAT3 a = player->GetPosition();
+	XMFLOAT3 b = homeOBJ->GetPosition();
 	float xyz = std::pow(a.x - b.x, 2.0f) + std::pow(a.y - b.y, 2.0f) + std::pow(a.z - b.z, 2.0f);
 	float lenR = std::pow(1.0f + 1.0f, 2.0f);
 	if (xyz <= lenR) {
@@ -154,8 +165,9 @@ void GameScene::Draw() {
 	/// <summary>
 
 	//3Dオブジェクトの描画
-	object3d->Draw();
-	object3d_2->Draw();
+	homeOBJ->Draw();
+	player->Draw();
+	zango->Draw();
 
 
 	//3Dオブジェクト描画後処理
