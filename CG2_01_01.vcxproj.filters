@@ -58,6 +58,12 @@
     <Filter Include="engin\ソース ファイル\input">
       <UniqueIdentifier>{81b27b69-97e3-4554-a2ed-754762fb16ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engin\ソース ファイル\math">
+      <UniqueIdentifier>{df38d8b7-cc6c-470d-8df6-fed50e7bed7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\math">
+      <UniqueIdentifier>{1cc7e2c1-9de4-42ff-8a33-81e935e9bc0a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -90,6 +96,21 @@
     </ClCompile>
     <ClCompile Include="engine\3d\Object3d.cpp">
       <Filter>engin\ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Affin.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\ConvertXM.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Matrix4.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector2.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector3.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +174,21 @@
     </ClInclude>
     <ClInclude Include="engine\3d\Object3d.h">
       <Filter>engin\ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Affin.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\ConvertXM.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix4.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector2.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector3.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

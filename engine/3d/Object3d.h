@@ -8,6 +8,21 @@
 #include <string.h>
 #include "Model.h"
 
+//#include "Vector3.h"
+//#include "Matrix4.h"
+//#include "Affin.h"
+
+//// 定数バッファ用データ構造体
+//struct ViewState
+//{
+//	XMFLOAT3 eye;
+//	XMFLOAT3 target;
+//	XMFLOAT3 up;
+//
+//	XMMATRIX view;       // ワールド → ビュー変換行列
+//	XMMATRIX projection; // ビュー → プロジェクション変換行列
+//};
+
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
@@ -108,6 +123,8 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12RootSignature> rootsignature;
 	// パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
+
+
 	// ビュー行列
 	static XMMATRIX matView;
 	// 射影行列
@@ -181,7 +198,7 @@ public: // メンバ関数
 	void SetModel(Model* model) { this->model = model; }
 
 private: // メンバ変数
-
+	public:
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 
 	// 色
