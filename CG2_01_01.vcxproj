@@ -157,6 +157,7 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="DirectXCommon.cpp" />
     <ClCompile Include="FPS.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="DirectXCommon.h" />
     <ClInclude Include="FPS.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Object3d.h" />
