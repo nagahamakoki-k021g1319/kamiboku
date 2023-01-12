@@ -35,6 +35,11 @@ public://メンバ関数
 	//コマンドリスト取得
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList.Get(); }
 
+	static DirectXCommon* GetInstance() {
+		static DirectXCommon instance;
+		return &instance;
+	}
+
 private:
 	//DirectX12デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device;

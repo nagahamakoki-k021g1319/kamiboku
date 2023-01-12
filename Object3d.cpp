@@ -27,7 +27,9 @@ XMMATRIX Object3d::matProjection{};
 XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };
 XMFLOAT3 Object3d::target = { 0, 0, 0 };
 XMFLOAT3 Object3d::up = { 0, 1, 0 };
-
+float Object3d::win_hi = 0;
+float Object3d::win_wi = 0;
+float Object3d::focalLengs = XMConvertToRadians(60.0f);
 
 
 void Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
@@ -131,6 +133,10 @@ void Object3d::CameraMoveVector(XMFLOAT3 move)
 
 void Object3d::InitializeCamera(int window_width, int window_height)
 {
+	win_wi = window_width;
+	win_hi = window_height;
+	focalLengs = XMConvertToRadians(60.0f);
+
 	// ビュー行列の生成
 	matView = XMMatrixLookAtLH(
 		XMLoadFloat3(&eye),
@@ -142,10 +148,11 @@ void Object3d::InitializeCamera(int window_width, int window_height)
 	//	0, window_width,
 	//	window_height, 0,
 	//	0, 1);
+
 	// 透視投影による射影行列の生成
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
-		(float)window_width / window_height,
+		focalLengs,
+		win_wi / win_hi,
 		0.1f, 1000.0f
 	);
 }
@@ -305,6 +312,11 @@ void Object3d::UpdateViewMatrix()
 {
 	// ビュー行列の更新
 	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+	matProjection = XMMatrixPerspectiveFovLH(
+		focalLengs,
+		win_wi / win_hi,
+		0.1f, 1000.0f
+	);
 }
 
 bool Object3d::Initialize()
@@ -356,7 +368,7 @@ void Object3d::Update()
 	matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 	// 親オブジェクトがあれば
-	if (parent != nullptr) {
+	if (parent) {
 		// 親オブジェクトのワールド行列を掛ける
 		matWorld *= parent->matWorld;
 	}

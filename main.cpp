@@ -27,7 +27,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	dxCommon->Initialize(winApp);
 
 	MSG msg = {};
-	
+
 	//ポインタ
 	Input* input = nullptr;
 
@@ -84,16 +84,33 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
 	// OBJからモデルデータを読み込み
-	Model* model = Model::LoadFromOBJ("as");
+	Model* model = Model::LoadFromOBJ("cube");
 	Model* model2 = Model::LoadFromOBJ("as2");
+	Model* zangoMD = Model::LoadFromOBJ("zango");
 	//3Dオブジェクト生成
-	Object3d* object3d = Object3d::Create();
-	Object3d* object3d_2 = Object3d::Create();
+	Object3d* homeOBJ = Object3d::Create();
+	Object3d* player = Object3d::Create();
+	Object3d* zango = Object3d::Create();
 	// オブジェクトにモデルを紐づける
-	object3d->SetModel(model);
-	object3d_2->SetModel(model2);
+	homeOBJ->SetModel(model);
+	player->SetModel(model2);
+	zango->SetModel(zangoMD);
+
+
+
+
+
+
+
+
+	player->SetParent(homeOBJ);
 	//3Dオブジェクトの位置を指定
-	object3d_2->SetPosition({ -5,-5,0 });
+	player->SetPosition({ 10,0,0 });
+
+	player->SetScale({ 2,2,2 });
+	zango->SetScale({ 5,3.5f,5 });
+
+
 
 	////////////////////////////
 	//------音声読み込み--------//
@@ -127,47 +144,41 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region DirectX毎フレーム処理
-		/////////////////////////////////////////////////////
-		//----------DireceX毎フレーム処理　ここから------------//
-		///////////////////////////////////////////////////
 
 		//入力の更新
 		input->Update();
 
-		//object3d->Update();
-		object3d_2->Update();
-
-		object3d->Update();
+		/////////////////////////////////////////////////////
+		//----------DireceX毎フレーム処理　ここから------------//
+		///////////////////////////////////////////////////
+		
+		
 		// オブジェクト移動
 		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 		{
 			// 現在の座標を取得
-			XMFLOAT3 position = object3d->GetPosition();
+			XMFLOAT3 rotate = homeOBJ->GetRotate();
 
 			// 移動後の座標を計算
-			if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-			else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-			if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-			else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+			if (input->PushKey(DIK_UP)) { rotate.y += 0.5f; }
+			else if (input->PushKey(DIK_DOWN)) { rotate.y -= 0.5f; }
+		/*	if (input->PushKey(DIK_RIGHT)) { rotate.x += 1.0f; }
+			else if (input->PushKey(DIK_LEFT)) { rotate.x -= 1.0f; }*/
 
 			// 座標の変更を反映
-			object3d->SetPosition(position);
+			
+			homeOBJ->SetRotate(rotate);
 		}
+		homeOBJ->Update();
+		player->Update();
+		zango->Update();
 
-		if (CheckFlag == 0) {
-			//音声再生
-			audio->PlayWave("tit.wav");
-			CheckFlag = 1;
-		}
+		
 
-		if (input->TriggerKey(DIK_SPACE)) {
-			//音声再生
-			audio->PlayWave("cr.wav");
-		}
-
+		
 		//////////////////////////////////////////////
 		//-------DireceX毎フレーム処理　ここまで--------//
-		////////////////////////////////////////////
+		/////////////////////////////////////////////
 
 #pragma endregion
 
@@ -179,8 +190,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		Object3d::PreDraw(dxCommon->GetCommandList());
 
 		//3Dオブジェクトの描画
-		object3d->Draw();
-		object3d_2->Draw();
+		homeOBJ->Draw();
+		player->Draw();
+
+		zango->Draw();
 
 
 		/// <summary>
@@ -210,8 +223,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region  WindowsAPI後始末
 
 	//3Dオブジェクト解放
-	delete object3d;
-	delete object3d_2;
+	delete homeOBJ;
+	delete player;
 	
 	//3Dモデル解放
 	delete model;

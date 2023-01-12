@@ -31,7 +31,7 @@ private: // エイリアス
 		XMMATRIX mat;	// ３Ｄ変換行列
 	};
 
-	
+
 
 private: // 定数
 	static const int division = 50;					// 分割数
@@ -101,7 +101,7 @@ public: // 静的メンバ関数
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
-	
+
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* cmdList;
 	// ルートシグネチャ
@@ -140,7 +140,7 @@ private:// 静的メンバ関数
 	static void UpdateViewMatrix();
 
 public: // メンバ関数
-	
+
 	bool Initialize();
 	/// <summary>
 	/// 毎フレーム処理
@@ -164,6 +164,26 @@ public: // メンバ関数
 	/// <param name="position">座標</param>
 	void SetPosition(const XMFLOAT3& position) { this->position = position; }
 
+	/// <summary>
+	/// 座標の取得
+	/// </summary>
+	/// <returns>座標</returns>
+	const XMFLOAT3& GetScale() const { return scale; }
+
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
+
+	const XMFLOAT3& GetRotate() const { return rotation; }
+
+	void SetRotate(const XMFLOAT3& rotation) { this->rotation = rotation; }
+
+	Object3d* GetParent() const { return parent; }
+
+	void SetParent(Object3d* parent) { this->parent = parent; }
+
 	//setter
 	void SetModel(Model* model) { this->model = model; }
 
@@ -185,4 +205,9 @@ private: // メンバ変数
 	Object3d* parent = nullptr;
 	//モデル
 	Model* model = nullptr;
+
+	static float win_wi, win_hi;
+public:
+	static float focalLengs;
+
 };
