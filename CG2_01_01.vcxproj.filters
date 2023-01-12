@@ -1,97 +1,158 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
+    <Filter Include="engin">
+      <UniqueIdentifier>{f0492824-800e-46a6-aa32-6d223d6822ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="user">
+      <UniqueIdentifier>{1b6a0ba1-42ca-42e4-b9a4-8cdef4e55b2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="user\ソース">
+      <UniqueIdentifier>{f77dbfc2-86c1-4249-aa29-df68c1a242aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="user\ヘッダー">
+      <UniqueIdentifier>{668083c6-fcab-4b9c-9ead-9ad97eef0127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="user\リソース">
+      <UniqueIdentifier>{b53697a2-8491-4dbd-a1f0-8b41490b4601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="ヘッダー ファイル">
+    <Filter Include="engin\ヘッダー ファイル">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="リソース ファイル">
+    <Filter Include="engin\リソース ファイル">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="engin\ソース ファイル\3d">
+      <UniqueIdentifier>{deb000a8-7da6-4f0e-8422-479b0ef906fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\2d">
+      <UniqueIdentifier>{11de26a5-bc32-4e64-9702-aaf9c8f5294b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\base">
+      <UniqueIdentifier>{bd28c35f-b00b-48f9-9d18-21df988874c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\3d">
+      <UniqueIdentifier>{2c70f9df-05af-4c2a-a2ae-d8fa74ce838d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\2d">
+      <UniqueIdentifier>{8b9369d5-ea75-40c7-a224-6ab0f7c34892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\base">
+      <UniqueIdentifier>{a1411c33-18b1-4373-84b3-26bdf2c647e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\audio">
+      <UniqueIdentifier>{cd983442-2147-43bf-99e0-43d0eeebf8a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\input">
+      <UniqueIdentifier>{067b95cf-a859-40b7-b770-3504078cb22e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\audio">
+      <UniqueIdentifier>{b1cdca8d-16b0-4fb4-adea-5c7ce43d1579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\input">
+      <UniqueIdentifier>{81b27b69-97e3-4554-a2ed-754762fb16ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="WinApp.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object3d.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="FPS.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteCommon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Audio.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="GameScene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>user\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\input\Input.cpp">
+      <Filter>engin\ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\Audio\Audio.cpp">
+      <Filter>engin\ソース ファイル\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\DirectXCommon.cpp">
+      <Filter>engin\ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\FPS.cpp">
+      <Filter>engin\ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\base\WinApp.cpp">
+      <Filter>engin\ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\2d\Sprite.cpp">
+      <Filter>engin\ソース ファイル\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\2d\SpriteCommon.cpp">
+      <Filter>engin\ソース ファイル\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Model.cpp">
+      <Filter>engin\ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Object3d.cpp">
+      <Filter>engin\ソース ファイル\3d</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BasicVS.hlsl" />
-    <FxCompile Include="BasicPS.hlsl" />
-    <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl" />
-    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl" />
-    <FxCompile Include="SpritePS.hlsl" />
-    <FxCompile Include="SpriteVS.hlsl" />
+    <FxCompile Include="SpriteVS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="BasicPS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="BasicVS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
-    <None Include="Resources\shaders\Basic.hlsli" />
-    <None Include="Sprite.hlsli" />
+    <None Include="Resources\shaders\Basic.hlsli">
+      <Filter>engin\リソース ファイル</Filter>
+    </None>
+    <None Include="Resources\shaders\OBJShaderHeader.hlsli">
+      <Filter>engin\リソース ファイル</Filter>
+    </None>
+    <None Include="Sprite.hlsli">
+      <Filter>engin\リソース ファイル</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectXCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WinApp.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object3d.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FPS.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Audio.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="GameScene.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>user\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\input\Input.h">
+      <Filter>engin\ヘッダー ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\Audio\Audio.h">
+      <Filter>engin\ヘッダー ファイル\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\DirectXCommon.h">
+      <Filter>engin\ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\FPS.h">
+      <Filter>engin\ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\base\WinApp.h">
+      <Filter>engin\ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\2d\Sprite.h">
+      <Filter>engin\ヘッダー ファイル\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\2d\SpriteCommon.h">
+      <Filter>engin\ヘッダー ファイル\2d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Model.h">
+      <Filter>engin\ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Object3d.h">
+      <Filter>engin\ヘッダー ファイル\3d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
