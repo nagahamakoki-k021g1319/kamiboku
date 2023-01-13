@@ -36,7 +36,7 @@ XMMATRIX Object3d::matProjection{};
 XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };
 XMFLOAT3 Object3d::target = { 0, 0, 0 };
 XMFLOAT3 Object3d::up = { 0, 1, 0 };
-float Object3d::focalLengs = 50.0f;
+float Object3d::focalLengs = 90.0f;
 
 
 
@@ -158,7 +158,7 @@ void Object3d::InitializeCamera(int window_width, int window_height)
 
 	
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
+		FieldOfViewY(focalLengs,35),
 		(float)window_width / window_height,
 		0.1f, 1000.0f
 	);
@@ -336,7 +336,7 @@ void Object3d::UpdateViewMatrix()
 		XMLoadFloat3(&up));
 
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
+		FieldOfViewY(focalLengs, 35),
 		(float) 1280 / 720,
 		0.1f, 1000.0f
 	);
@@ -584,4 +584,10 @@ Matrix4 Object3d::MakeInverse(const Matrix4* mat)
 	}
 
 	return retMat;
+}
+
+float Object3d::FieldOfViewY(float focalLengs, float sensor) {
+
+	return 2 * atan(sensor / (2 * focalLengs));
+
 }

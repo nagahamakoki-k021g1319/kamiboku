@@ -110,16 +110,19 @@ public: // 静的メンバ関数
 	/// ベクトルによる移動
 	/// </summary>
 	/// <param name="move">移動量</param>
-	static void CameraMoveVector(Vector3 move);
+	//static void CameraMoveVector(Vector3 move);
 
 	
-	static const XMFLOAT3& GetEye() { return eye; }
+	/*static const XMFLOAT3& GetEye() { return eye; }
 
 	static void SetEye(XMFLOAT3 eye);
 
 	static const XMFLOAT3& GetTarget() { return target; }
 
-	static void SetTarget(XMFLOAT3 target);
+	static void SetTarget(XMFLOAT3 target);*/
+
+	static float FieldOfViewY(float focalLengs, float sensor);
+	
 
 private: // 静的メンバ変数
 	// デバイス
