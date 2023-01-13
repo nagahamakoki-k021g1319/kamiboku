@@ -2,9 +2,10 @@
 #include <cassert>
 
 
+
 Enemy::Enemy() {
 	worldTransForm.Initialize();
-	worldTransForm.translation = { 100,0,100 };
+	worldTransForm.position = { 100,0,100 };
 	isDead = true;
 	YTmp = { 0,1,0 };
 	speed = 0.0004f;
@@ -15,14 +16,14 @@ Enemy::~Enemy() {}
 
 void Enemy::CalcVec(Vector3 obj) {
 	//ê≥ñ âºÉxÉNÉgÉã
-	enemyTmp = obj - worldTransForm.translation_;
-	enemyTmp.normalize();
+	enemyTmp = obj - worldTransForm.position;
+	enemyTmp.nomalize();
 	//âEÉxÉNÉgÉã
 	enemyRight = YTmp.cross(enemyTmp);
-	enemyRight.normalize();
+	enemyRight.nomalize();
 	//ê≥ñ ÉxÉNÉgÉã
 	enemyFront = enemyRight.cross(YTmp);
-	enemyFront.normalize();
+	enemyFront.nomalize();
 }
 
 void Enemy::Update(Model* model_, Vector3 obj) {
@@ -49,10 +50,10 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 
 	//çsóÒåvéZ
 
-	worldTransForm.matWorld_ = Affin::matWorld(
-		worldTransForm.translation_,
-		worldTransForm.rotation_,
-		worldTransForm.scale_);
+	worldTransForm.matWorld = Affin::matWorld(
+		worldTransForm.position,
+		worldTransForm.rotation,
+		worldTransForm.scale);
 
 	if (isDead == false) {
 		time++;
@@ -60,7 +61,7 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 			speed += 0.0001f;
 			time = 0;
 		}
-		worldTransForm.translation_ += enemyFront * 0.1;
+		worldTransForm.position += enemyFront * 0.1;
 	}
 	else if (isDead == true) {
 		speed = 0.0008f;
@@ -70,23 +71,23 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 	switch (seed_)
 	{
 	case 1:
-		if (worldTransForm.translation_.x < 90) {
-			worldTransForm.translation_.x = 90;
+		if (worldTransForm.position.x < 90) {
+			worldTransForm.position.x = 90;
 		}
 		break;
 	case 2:
-		if (worldTransForm.translation_.x > -90) {
-			worldTransForm.translation_.x = -90;
+		if (worldTransForm.position.x > -90) {
+			worldTransForm.position.x = -90;
 		}
 		break;
 	case 3:
-		if (worldTransForm.translation_.z < 90) {
-			worldTransForm.translation_.z = 90;
+		if (worldTransForm.position.z < 90) {
+			worldTransForm.position.z = 90;
 		}
 		break;
 	case 4:
-		if (worldTransForm.translation_.z > -90) {
-			worldTransForm.translation_.z = -90;
+		if (worldTransForm.position.z > -90) {
+			worldTransForm.position.z = -90;
 		}
 		break;
 
@@ -97,24 +98,23 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 
 
 	//åãâ ÇîΩâf
-	worldTransForm.TransferMatrix();
+	worldTransForm.Update();
 	
 	//Hit();
 }
 
-void Enemy::Draw(ViewProjection& viewProjection_, uint32_t textureHandle_) {
-	
-	////íeï`âÊ
-	//for (std::unique_ptr<EnemyBullet>& Ebullet : bullets_) {
-	//	Ebullet->Draw(viewProjection_, textureHandle_);
-	//}
-}
+//void Enemy::Draw() {	
+//	////íeï`âÊ
+//	//for (std::unique_ptr<EnemyBullet>& Ebullet : bullets_) {
+//	//	Ebullet->Draw(viewProjection_, textureHandle_);
+//	//}
+//}
 
 void Enemy::Pop(Vector3 WorTrans, int seed) {
 	worldTransForm.Initialize();
-	worldTransForm.translation_ = { 100,0,100 };
+	worldTransForm.position = { 100,0,100 };
 	YTmp = { 0,1,0 };
-	worldTransForm.matWorld_ = Affin::matUnit();
+	worldTransForm.matWorld =Affin::matUnit();
 
 	if (isDead == true) {
 		isDead = false;
@@ -130,13 +130,13 @@ void Enemy::Pop(Vector3 WorTrans, int seed) {
 		float value = dist(engine) * dist2(engine);
 
 		//
-		worldTransForm.translation_ = { WorTrans.x + value,WorTrans.y, WorTrans.z + value };
+		worldTransForm.position = { WorTrans.x + value,WorTrans.y, WorTrans.z + value };
 	}
 }
 
 void Enemy::Hit() {
-	if (worldTransForm.translation_.x < 0.5 && worldTransForm.translation_.x > -0.5) {
-		if (worldTransForm.translation_.z < 0.5 && worldTransForm.translation_.z > -0.5) {
+	if (worldTransForm.position.x < 0.5 && worldTransForm.position.x > -0.5) {
+		if (worldTransForm.position.z < 0.5 && worldTransForm.position.z > -0.5) {
 			if (isDead == false) {
 				isDead = true;
 			}
@@ -159,13 +159,13 @@ void Enemy::Attack(Model* model_)
 		std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
 		//Bullet* newbullet = new Bullet();
 
-		pos = worldTransForm.translation_;
+		pos = worldTransForm.position;
 
 		newBullet->Initialize(model_, pos, enemyFront);
 
-		//íeÇìoò^
-		//bullets_.push_back(std::move(newBullet));
-		gameScene->AddEnemyBullet(std::move(newBullet));
+		////íeÇìoò^
+		////bullets_.push_back(std::move(newBullet));
+		//gameScene->AddEnemyBullet(std::move(newBullet));
 
 		//ÉNÅ[ÉãÉ^ÉCÉÄÇÉäÉZÉbÉg
 		coolTime = 250;

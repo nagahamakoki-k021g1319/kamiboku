@@ -82,8 +82,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	}
 	//3Dオブジェクトの位置を指定
 	{
-		player->SetPosition({ 0,0,10 });
-		zango->SetScale({ 5,3.5f,5 });
+		player->SetPosition(Vector3{ 0,0,10 });
+		zango->SetScale(Vector3{ 5, 3.5f, 5 });
 	}
 
 
@@ -102,7 +102,7 @@ void GameScene::Update() {
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
 		// 現在の座標を取得
-		XMFLOAT3 rotate = homeOBJ->GetRotate();
+		Vector3 rotate = homeOBJ->GetRotate();
 
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_UP)) { rotate.y += 0.5f; }
@@ -121,8 +121,8 @@ void GameScene::Update() {
 
 
 	//当たり判定
-	XMFLOAT3 a = player->GetPosition();
-	XMFLOAT3 b = homeOBJ->GetPosition();
+	Vector3 a = player->GetPosition();
+	Vector3 b = homeOBJ->GetPosition();
 	float xyz = std::pow(a.x - b.x, 2.0f) + std::pow(a.y - b.y, 2.0f) + std::pow(a.z - b.z, 2.0f);
 	float lenR = std::pow(1.0f + 1.0f, 2.0f);
 	if (xyz <= lenR) {

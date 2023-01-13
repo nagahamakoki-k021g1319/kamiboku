@@ -3,6 +3,9 @@
 #include <DirectXMath.h>
 #include <cmath>
 
+using namespace DirectX;
+
+
 Vector3::Vector3()
 {
 	x = 0;
@@ -34,7 +37,12 @@ float Vector3::dot(const Vector3& v) const {
 }
 
 Vector3 Vector3::cross(const Vector3& v) const {
-	return Vector3((this->y * v.z) - (this->z * v.y), (this->z * v.x) - (this->x * v.z), (this->x * v.y) - (this->y * v.x));
+	Vector3 w;
+	w.x = y * v.z - z * v.y;
+	w.y = z * v.x - x * v.z;
+	w.z = x * v.y - y * v.x;
+
+	return w;
 }
 
 const Vector3 Vector3::lerp(const Vector3& start, const Vector3& end, const float t) {
@@ -102,7 +110,7 @@ const Vector3 operator/(const Vector3& v, float s) {
 }
 
 // XM—p
-//
+
 //Vector3& Vector3::operator=(const XMFLOAT3& v1) {
 //	Vector3 res;
 //
@@ -112,7 +120,7 @@ const Vector3 operator/(const Vector3& v, float s) {
 //
 //	return res;
 //}
-//
+
 //XMFLOAT3& Vector3::operator=(const Vector3& v) {
 //	XMFLOAT3 res;
 //

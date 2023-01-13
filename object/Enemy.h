@@ -1,7 +1,7 @@
 #pragma once
 
 #include"Object3d.h"
-#include "WorldTransform.h"
+//#include "WorldTransform.h"
 #include "Affin.h"
 #include <random>
 
@@ -42,7 +42,7 @@ public:
 	~Enemy();
 
 	void Update(Model*model_,Vector3 obj);
-	void Draw(ViewProjection& viewProjection_, uint32_t textureHandle_);
+	//void Draw(ViewProjection& viewProjection_, uint32_t textureHandle_);
 	
 	void CalcVec(Vector3 view);
 	void Pop(Vector3 WorTrans, int seed_);

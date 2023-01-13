@@ -16,10 +16,10 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, Vector3 vect
 	worldTransform_.Initialize();
 
 	//worldTransform_.scale_ = Vector3(0.5f, 0.5f, 0.5f);
-	worldTransform_.translation_ = position;
-	worldTransform_.matWorld_ *= Affin::matWorld(worldTransform_.translation_, worldTransform_.rotation_, worldTransform_.scale_);
+	worldTransform_.position = position;
+	worldTransform_.matWorld *= Affin::matWorld(worldTransform_.position, worldTransform_.rotation, worldTransform_.scale);
 
-	worldTransform_.TransferMatrix();
+	worldTransform_.Update();
 }
 
 void EnemyBullet::Update()
@@ -28,11 +28,11 @@ void EnemyBullet::Update()
 	if (isDead==false) {
 		if (deadCount > 0) {			
 
-			worldTransform_.translation_ += bulletSpe;
+			worldTransform_.position += bulletSpe;
 
-			worldTransform_.matWorld_ = Affin::matWorld(worldTransform_.translation_, worldTransform_.rotation_, worldTransform_.scale_);
+			worldTransform_.matWorld = Affin::matWorld(worldTransform_.position, worldTransform_.rotation, worldTransform_.scale);
 			//s—ñ‚ÌÄŒvŽZ
-			worldTransform_.TransferMatrix();
+			worldTransform_.Update();
 
 			deadCount--;
 
@@ -44,11 +44,11 @@ void EnemyBullet::Update()
 	}
 }
 
-void EnemyBullet::Draw(const ViewProjection& viewProjection, uint32_t textureHandle)
-{
-	//ƒ‚ƒfƒ‹‚Ì•`‰æ
-	model_->Draw(worldTransform_, viewProjection, textureHandle);
-}
+//void EnemyBullet::Draw(const ViewProjection& viewProjection, uint32_t textureHandle)
+//{
+//	//ƒ‚ƒfƒ‹‚Ì•`‰æ
+//	model_->Draw(worldTransform_, viewProjection, textureHandle);
+//}
 
 void EnemyBullet::OnColision() {
 	isDead = true;

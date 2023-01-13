@@ -1,10 +1,12 @@
 #pragma once
-#include "model.h"
-#include "WorldTransform.h"
-#include "input.h"
-#include "DebugText.h"
-#include "ViewProjection.h"
+#include "Model.h"
+
+#include "Input.h"
+//#include "DebugText.h"
+//#include "WorldTransform.h"
+//#include "ViewProjection.h"
 #include <cassert>
+#include "Object3d.h"
 
 #include "Affin.h"
 
@@ -16,11 +18,11 @@ public:
 
 	void Update();
 
-	void Draw(const ViewProjection& viewProjection, uint32_t textureHandle);
+	//void Draw(const ViewProjection& viewProjection, uint32_t textureHandle);
 
 	void OnColision();
 
-	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransform_.matWorld_); };
+	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransform_.matWorld); };
 
 	bool IsDead() const { return isDead; }
 
@@ -28,7 +30,7 @@ public:
 	
 	const int r = 1;
 private:
-	WorldTransform worldTransform_;
+	Object3d worldTransform_;
 	Model* model_ = nullptr;
 	Vector3 eneVec;
 	Vector3 bulletSpe/* = Vector3(0, 0, 10)*/;

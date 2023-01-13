@@ -23,7 +23,11 @@ public:
 
 	// 代入演算子オーバーロード
 	//Matrix4 operator*=(const Matrix4& m2);
-
+	static Matrix4 MakeIdentity()
+	{
+		Matrix4 mat;
+		return mat;
+	}
 	Vector3 transform(const Vector3& v, const Matrix4& m);
 };
 // 代入演算子オーバーロード

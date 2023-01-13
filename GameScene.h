@@ -10,6 +10,8 @@
 #include "Audio.h"
 #include <string>
 
+#include "Matrix4.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -85,6 +87,8 @@ private: // メンバ変数
 
 
 	int soundCheckFlag = 0;
+
+	GameScene* gamescene = nullptr;
 	
 };
 

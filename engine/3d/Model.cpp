@@ -40,7 +40,7 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial
 	
 	// 定数バッファビューをセット
 	cmdList->SetGraphicsRootConstantBufferView(rootParamIndexMaterial, constBuffB1->GetGPUVirtualAddress());
-	
+
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandleSRV);
 	

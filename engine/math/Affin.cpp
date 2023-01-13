@@ -1,5 +1,6 @@
 #include "Affin.h"
 #include "math.h"
+#include <cmath>
 
 /// <summary>
 /// 単位行列設定
@@ -239,5 +240,12 @@ Vector3 Affin::wDivision(Vector3 vector, Matrix4 matrix) {
 		w };
 
 	return result;
+}
+
+//sin、cosを両方出す
+void Affin::SinCos(float& sin_, float& cos_, float angle)
+{
+	sin_ = sin(angle);
+	cos_ = cos(angle);
 }
 

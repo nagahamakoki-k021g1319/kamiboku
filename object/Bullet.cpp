@@ -10,24 +10,24 @@ void Bullet::Initialize(Model* model, const Vector3& position)
 	worldTransform_.Initialize();
 
 	//worldTransform_.translation_ = position;
-	worldTransform_.matWorld_ = Affin::matScale(0.5f, 0.5f, 0.5f);
-	worldTransform_.matWorld_ = Affin::matTrans(position);
-	worldTransform_.TransferMatrix();
+	worldTransform_.matWorld = Affin::matScale(0.5f, 0.5f, 0.5f);
+	worldTransform_.matWorld = Affin::matTrans(position);
+	worldTransform_.Update();
 }
 
 void Bullet::Update(Vector3 trans)
 {
 
-	worldTransform_.matWorld_ *= Affin::matTrans(trans);
+	worldTransform_.matWorld *= Affin::matTrans(trans);
 	//s—ñ‚ÌÄŒvŽZ
-	worldTransform_.TransferMatrix();
+	worldTransform_.Update();
 }
 
-void Bullet::Draw(const ViewProjection& viewProjection,uint32_t textureHandle)
-{
-	//ƒ‚ƒfƒ‹‚Ì•`‰æ
-	model_->Draw(worldTransform_, viewProjection, textureHandle);
-}
+//void Bullet::Draw(const ViewProjection& viewProjection,uint32_t textureHandle)
+//{
+//	//ƒ‚ƒfƒ‹‚Ì•`‰æ
+//	model_->Draw(worldTransform_, viewProjection, textureHandle);
+//}
 
 void Bullet::OnColision() {
 	isDead = true;

@@ -50,4 +50,7 @@ namespace Affin {
 	// ベクトルと行列の掛け算
 	Vector3 VecMat3D(Vector3 vec, Matrix4 mat);
 
+	//sin、cosを両方出す
+	void SinCos(float& sin_, float& cos_, float angle);
+
 } // namespace Affin
