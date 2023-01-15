@@ -31,6 +31,10 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	//スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon;
 	spriteCommon->Initialize(dxCommon);
+	//ビューの生成
+	{
+		view = new View();
+	}
 
 	//スプライトの初期化
 	{
@@ -82,8 +86,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	}
 	//3Dオブジェクトの位置を指定
 	{
-		player->SetPosition(Vector3{ 0,0,10 });
-		zango->SetScale(Vector3{ 5, 3.5f, 5 });
+		player->wtf.position = Vector3{ 0,0,10 };
+		zango->wtf.scale = (Vector3{ 5, 3.5f, 5 });
 	}
 
 
@@ -102,7 +106,7 @@ void GameScene::Update() {
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
 		// 現在の座標を取得
-		Vector3 rotate = homeOBJ->GetRotate();
+		Vector3 rotate = homeOBJ->wtf.rotation;
 
 		// 移動後の座標を計算
 		if (input->PushKey(DIK_UP)) { rotate.y += 0.5f; }
@@ -112,17 +116,33 @@ void GameScene::Update() {
 
 			// 座標の変更を反映
 
-		homeOBJ->SetRotate(rotate);
+		homeOBJ->wtf.rotation=rotate;
 	}
-	homeOBJ->Update();
-	player->Update();
-	zango->Update();
+
+	if (input->PushKey(DIK_W) || input->PushKey(DIK_D) || input->PushKey(DIK_S) || input->PushKey(DIK_A))
+	{
+		// 現在の座標を取得
+		Vector3 pos =view->eye;
+
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_W)) { pos.y += 0.5f; }
+		else if (input->PushKey(DIK_S)) { pos.y -= 0.5f; }
+			if (input->PushKey(DIK_D)) { pos.x += 1.0f; }
+			else if (input->PushKey(DIK_A)) { pos.x -= 1.0f; }
+
+			// 座標の変更を反映
+
+		view->eye = pos;
+	}
+	homeOBJ->Update(view);
+	player->Update(view);
+	zango->Update(view);
 
 
 
 	//当たり判定
-	Vector3 a = player->GetPosition();
-	Vector3 b = homeOBJ->GetPosition();
+	Vector3 a = player->wtf.position;
+	Vector3 b = homeOBJ->wtf.position;
 	float xyz = std::pow(a.x - b.x, 2.0f) + std::pow(a.y - b.y, 2.0f) + std::pow(a.z - b.z, 2.0f);
 	float lenR = std::pow(1.0f + 1.0f, 2.0f);
 	if (xyz <= lenR) {

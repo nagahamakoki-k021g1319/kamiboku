@@ -13,6 +13,9 @@
 #include "Matrix4.h"
 #include "Affin.h"
 
+#include "Transform.h"
+#include "View.h"
+
 //// 定数バッファ用データ構造体
 //struct ViewState
 //{
@@ -187,41 +190,21 @@ public: // メンバ関数
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	//void Update();
+
+	void Update(View* view);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
-
-	/// <summary>
-	/// 座標の取得
-	/// </summary>
-	/// <returns>座標</returns>
-	const Vector3& GetPosition() const { return position; }
-
-	/// <summary>
-	/// 座標の設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	void SetPosition(const Vector3& position) { this->position = position; }
-
-	const Vector3& GetScale() const { return scale; }
-
-	void SetScale(const Vector3& scale) { this->scale = scale; }
-
-	const Vector3& GetRotate() const { return rotation; }
-
-	void SetRotate(const Vector3& rotation) { this->rotation = rotation; }
+	void Draw();	
 
 	Object3d* GetParent() const { return parent; }
 
 	void SetParent(Object3d* parent) { this->parent = parent; }
 
-
 	//setter
 	void SetModel(Model* model) { this->model = model; }
-
 
 	static void MakePerspectiveL(float fovAngleY, float aspect, float near_, float far_, Matrix4& matrix);
 
@@ -229,20 +212,15 @@ public: // メンバ関数
 
 	static Matrix4 MakeInverse(const Matrix4* mat);
 
+
+
 private: // メンバ変数
 	public:
 	ComPtr<ID3D12Resource> constBuffB0; // 定数バッファ
 
 	// 色
-	XMFLOAT4 color = { 1,1,1,1 };
-	// ローカルスケール
-	Vector3 scale = { 1,1,1 };
-	// X,Y,Z軸回りのローカル回転角
-	Vector3 rotation = { 0,0,0 };
-	// ローカル座標
-	Vector3 position = { 0,0,0 };
-	// ローカルワールド変換行列
-	Matrix4 matWorld;
+	XMFLOAT4 color = { 1,1,1,1 };	
+
 	// 親オブジェクト
 	Object3d* parent = nullptr;
 	//モデル
@@ -250,6 +228,7 @@ private: // メンバ変数
 
 	static float win_wi, win_hi;
 public:
+	Transform wtf;
 	static float focalLengs;
 
 };

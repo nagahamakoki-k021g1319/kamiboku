@@ -16,13 +16,13 @@ public:
 
 	void Initialize(Model* model, const Vector3& position);
 
-	void Update(Vector3 trans);
+	void Update(Vector3 trans,View& view);
 
 	//void Draw(const ViewProjection& viewProjection, uint32_t textureHandle);
 
 	void OnColision();
 
-	Vector3 GetWorldPosition() { return Affin::GetWorldTrans( worldTransform_.matWorld); };
+	Vector3 GetWorldPosition() { return Affin::GetWorldTrans( worldTransform_.wtf.matWorld); };
 
 	bool IsDead() const { return isDead; }
 

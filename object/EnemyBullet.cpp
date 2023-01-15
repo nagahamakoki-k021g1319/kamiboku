@@ -16,23 +16,23 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, Vector3 vect
 	worldTransform_.Initialize();
 
 	//worldTransform_.scale_ = Vector3(0.5f, 0.5f, 0.5f);
-	worldTransform_.position = position;
-	worldTransform_.matWorld *= Affin::matWorld(worldTransform_.position, worldTransform_.rotation, worldTransform_.scale);
+	worldTransform_.wtf.position = position;
+	worldTransform_.wtf.matWorld *= Affin::matWorld(worldTransform_.wtf.position, worldTransform_.wtf.rotation, worldTransform_.wtf.scale);
 
-	worldTransform_.Update();
+	//worldTransform_.Update();
 }
 
-void EnemyBullet::Update()
+void EnemyBullet::Update(View& view)
 {
 	bulletSpe = eneVec;
 	if (isDead==false) {
 		if (deadCount > 0) {			
 
-			worldTransform_.position += bulletSpe;
+			worldTransform_.wtf.position += bulletSpe;
 
-			worldTransform_.matWorld = Affin::matWorld(worldTransform_.position, worldTransform_.rotation, worldTransform_.scale);
+			worldTransform_.wtf.matWorld = Affin::matWorld(worldTransform_.wtf.position, worldTransform_.wtf.rotation, worldTransform_.wtf.scale);
 			//çsóÒÇÃçƒåvéZ
-			worldTransform_.Update();
+			worldTransform_.Update(&view);
 
 			deadCount--;
 

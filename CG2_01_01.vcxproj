@@ -160,6 +160,8 @@
     <ClCompile Include="engine\2d\SpriteCommon.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\Object3d.cpp" />
+    <ClCompile Include="engine\3d\Transform.cpp" />
+    <ClCompile Include="engine\3d\View.cpp" />
     <ClCompile Include="engine\Audio\Audio.cpp" />
     <ClCompile Include="engine\base\DirectXCommon.cpp" />
     <ClCompile Include="engine\base\FPS.cpp" />
@@ -222,6 +224,8 @@
     <ClInclude Include="engine\2d\SpriteCommon.h" />
     <ClInclude Include="engine\3d\Model.h" />
     <ClInclude Include="engine\3d\Object3d.h" />
+    <ClInclude Include="engine\3d\Transform.h" />
+    <ClInclude Include="engine\3d\View.h" />
     <ClInclude Include="engine\Audio\Audio.h" />
     <ClInclude Include="engine\base\DirectXCommon.h" />
     <ClInclude Include="engine\base\FPS.h" />

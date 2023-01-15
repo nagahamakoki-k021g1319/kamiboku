@@ -25,3 +25,20 @@ XMMATRIX ConvertXM::ConvertMat4toXMMAT(Matrix4 m) {
 	return result;
 }
 
+Vector3 ConvertXM::ConvertXMFlo3toVec3(XMFLOAT3 XMFlo3) {
+	Vector3 result;
+	result.x = XMFlo3.x;
+	result.y = XMFlo3.y;
+	result.z = XMFlo3.z;
+
+	return result;
+}
+
+XMFLOAT3 ConvertXM::ConvertVec3toXMFlo3(Vector3 vec3) {
+	XMFLOAT3 result;
+	result.x = vec3.x;
+	result.y = vec3.y;
+	result.z = vec3.z;
+
+	return result;
+}

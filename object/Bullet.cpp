@@ -10,17 +10,17 @@ void Bullet::Initialize(Model* model, const Vector3& position)
 	worldTransform_.Initialize();
 
 	//worldTransform_.translation_ = position;
-	worldTransform_.matWorld = Affin::matScale(0.5f, 0.5f, 0.5f);
-	worldTransform_.matWorld = Affin::matTrans(position);
-	worldTransform_.Update();
+	worldTransform_.wtf.matWorld = Affin::matScale(0.5f, 0.5f, 0.5f);
+	worldTransform_.wtf.matWorld = Affin::matTrans(position);
+	//worldTransform_.Update();
 }
 
-void Bullet::Update(Vector3 trans)
+void Bullet::Update(Vector3 trans,View& view)
 {
 
-	worldTransform_.matWorld *= Affin::matTrans(trans);
+	worldTransform_.wtf.matWorld *= Affin::matTrans(trans);
 	//çsóÒÇÃçƒåvéZ
-	worldTransform_.Update();
+	worldTransform_.Update(&view);
 }
 
 //void Bullet::Draw(const ViewProjection& viewProjection,uint32_t textureHandle)

@@ -5,18 +5,18 @@
 
 Enemy::Enemy() {
 	worldTransForm.Initialize();
-	worldTransForm.position = { 100,0,100 };
+	worldTransForm.wtf.position = { 100,0,100 };
 	isDead = true;
 	YTmp = { 0,1,0 };
 	speed = 0.0004f;
-	worldTransForm.matWorld = Affin::matUnit();
+	worldTransForm.wtf.matWorld = Affin::matUnit();
 }
 
 Enemy::~Enemy() {}
 
 void Enemy::CalcVec(Vector3 obj) {
 	//正面仮ベクトル
-	enemyTmp = obj - worldTransForm.position;
+	enemyTmp = obj - worldTransForm.wtf.position;
 	enemyTmp.nomalize();
 	//右ベクトル
 	enemyRight = YTmp.cross(enemyTmp);
@@ -26,7 +26,7 @@ void Enemy::CalcVec(Vector3 obj) {
 	enemyFront.nomalize();
 }
 
-void Enemy::Update(Model* model_, Vector3 obj) {
+void Enemy::Update(Model* model_, Vector3 obj,View& view) {
 	assert(model_);
 	////デスフラグの立った弾を削除
 	//bullets_.remove_if(
@@ -50,10 +50,10 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 
 	//行列計算
 
-	worldTransForm.matWorld = Affin::matWorld(
-		worldTransForm.position,
-		worldTransForm.rotation,
-		worldTransForm.scale);
+	worldTransForm.wtf.matWorld = Affin::matWorld(
+		worldTransForm.wtf.position,
+		worldTransForm.wtf.rotation,
+		worldTransForm.wtf.scale);
 
 	if (isDead == false) {
 		time++;
@@ -61,7 +61,7 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 			speed += 0.0001f;
 			time = 0;
 		}
-		worldTransForm.position += enemyFront * 0.1;
+		worldTransForm.wtf.position += enemyFront * 0.1;
 	}
 	else if (isDead == true) {
 		speed = 0.0008f;
@@ -71,23 +71,23 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 	switch (seed_)
 	{
 	case 1:
-		if (worldTransForm.position.x < 90) {
-			worldTransForm.position.x = 90;
+		if (worldTransForm.wtf.position.x < 90) {
+			worldTransForm.wtf.position.x = 90;
 		}
 		break;
 	case 2:
-		if (worldTransForm.position.x > -90) {
-			worldTransForm.position.x = -90;
+		if (worldTransForm.wtf.position.x > -90) {
+			worldTransForm.wtf.position.x = -90;
 		}
 		break;
 	case 3:
-		if (worldTransForm.position.z < 90) {
-			worldTransForm.position.z = 90;
+		if (worldTransForm.wtf.position.z < 90) {
+			worldTransForm.wtf.position.z = 90;
 		}
 		break;
 	case 4:
-		if (worldTransForm.position.z > -90) {
-			worldTransForm.position.z = -90;
+		if (worldTransForm.wtf.position.z > -90) {
+			worldTransForm.wtf.position.z = -90;
 		}
 		break;
 
@@ -98,7 +98,7 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 
 
 	//結果を反映
-	worldTransForm.Update();
+	worldTransForm.Update(&view);
 	
 	//Hit();
 }
@@ -112,9 +112,9 @@ void Enemy::Update(Model* model_, Vector3 obj) {
 
 void Enemy::Pop(Vector3 WorTrans, int seed) {
 	worldTransForm.Initialize();
-	worldTransForm.position = { 100,0,100 };
+	worldTransForm.wtf.position = { 100,0,100 };
 	YTmp = { 0,1,0 };
-	worldTransForm.matWorld =Affin::matUnit();
+	worldTransForm.wtf.matWorld =Affin::matUnit();
 
 	if (isDead == true) {
 		isDead = false;
@@ -130,13 +130,13 @@ void Enemy::Pop(Vector3 WorTrans, int seed) {
 		float value = dist(engine) * dist2(engine);
 
 		//
-		worldTransForm.position = { WorTrans.x + value,WorTrans.y, WorTrans.z + value };
+		worldTransForm.wtf.position = { WorTrans.x + value,WorTrans.y, WorTrans.z + value };
 	}
 }
 
 void Enemy::Hit() {
-	if (worldTransForm.position.x < 0.5 && worldTransForm.position.x > -0.5) {
-		if (worldTransForm.position.z < 0.5 && worldTransForm.position.z > -0.5) {
+	if (worldTransForm.wtf.position.x < 0.5 && worldTransForm.wtf.position.x > -0.5) {
+		if (worldTransForm.wtf.position.z < 0.5 && worldTransForm.wtf.position.z > -0.5) {
 			if (isDead == false) {
 				isDead = true;
 			}
@@ -159,7 +159,7 @@ void Enemy::Attack(Model* model_)
 		std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
 		//Bullet* newbullet = new Bullet();
 
-		pos = worldTransForm.position;
+		pos = worldTransForm.wtf.position;
 
 		newBullet->Initialize(model_, pos, enemyFront);
 

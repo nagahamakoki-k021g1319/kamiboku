@@ -383,36 +383,81 @@ bool Object3d::Initialize()
 	return true;
 }
 
-void Object3d::Update()
+/*
+	void Object3d::Update()
+	{
+		HRESULT result;
+		Matrix4 matScale, matRot, matTrans, resultMat;
+		resultMat = Affin::matUnit();
+
+		// スケール、回転、平行移動行列の計算
+		matScale = Affin::matScale(scale.x, scale.y, scale.z);
+		matRot = Affin::matUnit();
+		matRot *= Affin::matRotation(rotation);
+		matTrans = Affin::matTrans(position.x, position.y, position.z);
+
+		// ワールド行列の合成
+		matWorld = Affin::matUnit(); // 変形をリセット
+		matWorld *= matScale; // ワールド行列にスケーリングを反映
+		matWorld *= matRot; // ワールド行列に回転を反映
+		matWorld *= matTrans; // ワールド行列に平行移動を反映
+
+		// 親オブジェクトがあれば
+		if (parent != nullptr) {
+			// 親オブジェクトのワールド行列を掛ける
+			matWorld *= parent->matWorld;
+		}
+
+		// 定数バッファへデータ転送
+
+		UpdateViewMatrix();
+		ConstBufferDataB0* constMap = nullptr;
+		result = constBuffB0->Map(0, nullptr, (void**)&constMap);
+		resultMat = matWorld * ConvertXM::ConvertXMMATtoMat4(matView * matProjection);	// 行列の合成
+
+		constMap->mat = ConvertXM::ConvertMat4toXMMAT(resultMat);
+		constBuffB0->Unmap(0, nullptr);
+
+	}
+*/
+
+void Object3d::Update(View* view)
 {
+	
+	assert(view);
+	eye = ConvertXM::ConvertVec3toXMFlo3(view->eye);
+	target = ConvertXM::ConvertVec3toXMFlo3(view->target);
+	up = ConvertXM::ConvertVec3toXMFlo3(view->up);
+
+
 	HRESULT result;
-	Matrix4 matScale, matRot, matTrans,resultMat;
+	Matrix4 matScale, matRot, matTrans, resultMat;
 	resultMat = Affin::matUnit();
 
 	// スケール、回転、平行移動行列の計算
-	matScale = Affin::matScale(scale.x, scale.y, scale.z);
+	matScale = Affin::matScale(wtf.scale.x, wtf.scale.y, wtf.scale.z);
 	matRot = Affin::matUnit();
-	matRot *= Affin::matRotation(rotation);
-	matTrans = Affin::matTrans(position.x, position.y, position.z);
+	matRot *= Affin::matRotation(wtf.rotation);
+	matTrans = Affin::matTrans(wtf.position.x, wtf.position.y, wtf.position.z);
 
 	// ワールド行列の合成
-	matWorld = Affin::matUnit(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
+	wtf.matWorld = Affin::matUnit(); // 変形をリセット
+	wtf.matWorld *= matScale; // ワールド行列にスケーリングを反映
+	wtf.matWorld *= matRot; // ワールド行列に回転を反映
+	wtf.matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 	// 親オブジェクトがあれば
 	if (parent != nullptr) {
 		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
+		wtf.matWorld *= parent->wtf.matWorld;
 	}
 
 	// 定数バッファへデータ転送
 
 	UpdateViewMatrix();
 	ConstBufferDataB0* constMap = nullptr;
-	result = constBuffB0->Map(0, nullptr, (void**)&constMap);	
-	resultMat = matWorld * ConvertXM::ConvertXMMATtoMat4(matView * matProjection);	// 行列の合成
+	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
+	resultMat = wtf.matWorld * ConvertXM::ConvertXMMATtoMat4(matView * matProjection);	// 行列の合成
 
 	constMap->mat = ConvertXM::ConvertMat4toXMMAT(resultMat);
 	constBuffB0->Unmap(0, nullptr);

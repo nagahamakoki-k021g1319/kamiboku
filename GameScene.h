@@ -12,6 +12,9 @@
 
 #include "Matrix4.h"
 
+#include "Transform.h"
+#include "View.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -87,6 +90,8 @@ private: // メンバ変数
 
 
 	int soundCheckFlag = 0;
+
+	View* view = nullptr;
 
 	GameScene* gamescene = nullptr;
 	
