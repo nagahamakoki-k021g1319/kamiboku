@@ -11,7 +11,7 @@ class GameScene;
 
 class Enemy {
 public:
-	Object3d worldTransForm;
+	Object3d obj3d;
 	
 	bool isDead = true;
 	Vector3 enemyTmp;
@@ -41,14 +41,14 @@ public:
 	Enemy();
 	~Enemy();
 
-	void Update(Model*model_,Vector3 obj,View& view);
+	void Update(Model*model_,Vector3 obj,View* view);
 	void Draw();
 	//void Draw(ViewProjection& viewProjection_, uint32_t textureHandle_);
 	
 	void CalcVec(Vector3 view);
-	void Pop(Vector3 WorTrans, int seed_);
+	void Pop(Vector3 WorTrans, int seed_,Model* model);
 	void Hit();	
-	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.wtf.matWorld); };
+	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(obj3d.wtf.matWorld); };
 	Vector3 GetFrontVec() { return enemyFront; };
 	void SetGameScene(GameScene* gameScene_) { gameScene = gameScene_; };
 	void OnColision();

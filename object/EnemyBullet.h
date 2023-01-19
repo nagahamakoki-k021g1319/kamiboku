@@ -16,21 +16,22 @@ public:
 
 	void Initialize(Model* model, const Vector3& position,Vector3 vector);
 
-	void Update(View& view);
+	void Update(View* view);
 
-	//void Draw(const ViewProjection& viewProjection, uint32_t textureHandle);
+	void Draw();
 
 	void OnColision();
 
-	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransform_.wtf.matWorld); };
+	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(obj3d.wtf.matWorld); };
 
 	bool IsDead() const { return isDead; }
 
 public:
 	
 	const int r = 1;
+	Object3d obj3d;
 private:
-	Object3d worldTransform_;
+	
 	Model* model_ = nullptr;
 	Vector3 eneVec;
 	Vector3 bulletSpe/* = Vector3(0, 0, 10)*/;

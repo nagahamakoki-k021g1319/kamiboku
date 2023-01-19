@@ -1,33 +1,37 @@
 #include "Bullet.h"
 
-
+//Bullet::~Bullet() {
+//	delete obj3d;
+//}
 void Bullet::Initialize(Model* model, const Vector3& position)
 {
 	//NULLチェック
 	assert(model);
 	model_ = model;
 
-	worldTransform_.Initialize();
+	obj3d.Initialize();
+	obj3d.wtf.Initialize();
+	obj3d.SetModel(model);
 
-	//worldTransform_.translation_ = position;
-	worldTransform_.wtf.matWorld = Affin::matScale(0.5f, 0.5f, 0.5f);
-	worldTransform_.wtf.matWorld = Affin::matTrans(position);
-	//worldTransform_.Update();
+	//obj3d.translation_ = position;
+	obj3d.wtf.matWorld = Affin::matScale(0.5f, 0.5f, 0.5f);
+	obj3d.wtf.matWorld = Affin::matTrans(position);
+	//obj3d.Update();
 }
 
-void Bullet::Update(Vector3 trans,View& view)
+void Bullet::Update(Vector3 trans,View* view)
 {
 
-	worldTransform_.wtf.matWorld *= Affin::matTrans(trans);
+	obj3d.wtf.matWorld *= Affin::matTrans(trans);
 	//行列の再計算
-	worldTransform_.Update(&view);
+	obj3d.Update(view);
 }
 
-//void Bullet::Draw(const ViewProjection& viewProjection,uint32_t textureHandle)
-//{
-//	//モデルの描画
-//	model_->Draw(worldTransform_, viewProjection, textureHandle);
-//}
+void Bullet::Draw()
+{
+	//モデルの描画
+	obj3d.Draw();
+}
 
 void Bullet::OnColision() {
 	isDead = true;

@@ -8,31 +8,32 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, Vector3 vect
 	assert(model);
 	model_ = model;
 	eneVec = vector;
-	//eneVec.normalize();
+	//eneVec.nomalize();
 
 	isDead = false;
 	deadCount = 150;
 
-	worldTransform_.Initialize();
+	obj3d.Initialize();
+	obj3d.SetModel(model);
+	obj3d.wtf.Initialize();
+	//obj3d.scale_ = Vector3(0.5f, 0.5f, 0.5f);
+	obj3d.wtf.position = position;
+	obj3d.wtf.matWorld *= Affin::matWorld(obj3d.wtf.position, obj3d.wtf.rotation, obj3d.wtf.scale);
 
-	//worldTransform_.scale_ = Vector3(0.5f, 0.5f, 0.5f);
-	worldTransform_.wtf.position = position;
-	worldTransform_.wtf.matWorld *= Affin::matWorld(worldTransform_.wtf.position, worldTransform_.wtf.rotation, worldTransform_.wtf.scale);
-
-	//worldTransform_.Update();
+	//obj3d.Update();
 }
 
-void EnemyBullet::Update(View& view)
+void EnemyBullet::Update(View* view)
 {
 	bulletSpe = eneVec;
 	if (isDead==false) {
 		if (deadCount > 0) {			
 
-			worldTransform_.wtf.position += bulletSpe;
+			obj3d.wtf.position += bulletSpe;
 
-			worldTransform_.wtf.matWorld = Affin::matWorld(worldTransform_.wtf.position, worldTransform_.wtf.rotation, worldTransform_.wtf.scale);
+			obj3d.wtf.matWorld = Affin::matWorld(obj3d.wtf.position, obj3d.wtf.rotation, obj3d.wtf.scale);
 			//s—ñ‚ÌÄŒvŽZ
-			worldTransform_.Update(&view);
+			obj3d.Update(view);
 
 			deadCount--;
 
@@ -44,11 +45,11 @@ void EnemyBullet::Update(View& view)
 	}
 }
 
-//void EnemyBullet::Draw(const ViewProjection& viewProjection, uint32_t textureHandle)
-//{
-//	//ƒ‚ƒfƒ‹‚Ì•`‰æ
-//	model_->Draw(worldTransform_, viewProjection, textureHandle);
-//}
+void EnemyBullet::Draw()
+{
+	//ƒ‚ƒfƒ‹‚Ì•`‰æ
+	obj3d.Draw();
+}
 
 void EnemyBullet::OnColision() {
 	isDead = true;

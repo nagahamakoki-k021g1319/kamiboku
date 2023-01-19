@@ -17,6 +17,7 @@ GameScene::~GameScene() {
 	delete model2;
 	delete reticleMD;
 	delete zangoMD;
+	delete eneMD;
 
 	//オーディオ解放
 	audio->Finalize();
@@ -24,7 +25,7 @@ GameScene::~GameScene() {
 
 }
 
-void GameScene::Initialize(DirectXCommon* dxCommon, Input* input,GameScene* gamescene) {
+void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gamescene) {
 	// nullptrチェック
 	assert(dxCommon);
 	assert(input);
@@ -79,6 +80,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input,GameScene* game
 		model2 = Model::LoadFromOBJ("as2");
 		reticleMD = Model::LoadFromOBJ("cube");
 		zangoMD = Model::LoadFromOBJ("zango");
+		eneMD = Model::LoadFromOBJ("ene");
 	}
 	//3Dオブジェクト生成
 	{
@@ -125,7 +127,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input,GameScene* game
 	audio->LoadWave("cr.wav");
 	audio->LoadWave("mm.wav");
 
-	
+
 }
 
 
@@ -145,23 +147,41 @@ void GameScene::Update() {
 		if (input->PushKey(DIK_RIGHT)) { rotate.y += 1.0f; }
 		else if (input->PushKey(DIK_LEFT)) { rotate.y -= 1.0f; }
 
-			// 座標の変更を反映
+		// 座標の変更を反映
 
-		homeOBJ->wtf.rotation=rotate;
+		homeOBJ->wtf.rotation = rotate;
 	}
 	homeOBJ->Update(view);
 	player->Update(view);
 	zango->Update(view);
 	//敵ポップ
-	/*for (int i = 0; i < _countof(enemys); i++) {
-		if (enemys[i].isDead == false) {
-			enemys[i].Update();
-		}		
-	}*/
+	for (int i = 0; i < _countof(enemys); i++) {
+
+		enemys[i].Update(eneMD, Affin::GetWorldTrans(homeOBJ->wtf.matWorld), view);
+
+	}
 	for (int i = 0; i < 5; i++) {
 		PopPos_[i]->Update(view);
 	}
+
 	Reticle3D();
+	if (input->PushKey(DIK_SPACE))
+	{
+		Attack();
+	}
+
+	for (std::unique_ptr<Bullet>& bullet : bullets_) {
+		bullet->Update(resultRet, view);
+	}
+
+	//敵更新
+	for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
+		Ebullet->Update(view);
+	}
+
+
+
+
 
 	{
 		//デスフラグの立った弾を削除
@@ -174,17 +194,18 @@ void GameScene::Update() {
 		for (int i = 0; i < _countof(enemys); i++) {
 			enemys[i].SetGameScene(gamescene_);
 		}
+
 		if (waitTimer == 0) {
 			if (popCount > 0) {
 				if (popTime == 0) {
 					for (int i = 0; i < _countof(enemys); i++) {
 						if (enemys[i].isDead == true) {
-							enemys[i].Pop(Affin::GetWorldTrans(PopPos_[popRand]->wtf.matWorld), popRand);
+							enemys[i].Pop(Affin::GetWorldTrans(PopPos_[popRand]->wtf.matWorld), popRand, eneMD);
 
 							break;
 						}
 					}
-					popCount++;
+					popCount--;
 					popTime = 150;
 				}
 				else {
@@ -199,6 +220,28 @@ void GameScene::Update() {
 		}
 		else {
 			waitTimer--;
+		}
+		CheckAlive(enemys);
+		//ウェーブ&勝利判定
+		if (wave >= 0 && popCount == 0) {
+			if (CheckAlive(enemys) == true) {
+				if (wave < 3) {
+					wave++;
+					if (wave == 3) {
+						popCount = 30;
+					}
+					else if (wave == 2) {
+						popCount = 20;
+					}
+					else if (wave == 1) {
+						popCount = 10;
+					}
+					waitTimer = 250;
+				}
+				else if (wave == 3) {
+					//scene = 2;
+				}
+			}
 		}
 
 	}
@@ -312,7 +355,7 @@ void GameScene::Update() {
 	//音声再生
 	if (input->TriggerKey(DIK_O)) {
 		//音声再生
-		audio->PlayWave_("mm.wav")->Start();
+		audio->PlayWave("mm.wav");
 		soundCheckFlag = 1;
 	}
 	if (input->TriggerKey(DIK_SPACE)) {
@@ -320,10 +363,7 @@ void GameScene::Update() {
 		audio->PlayWave("cr.wav");
 	}
 
-	// リセット
-	if (input->PushKey(DIK_P)) {
-		audio->PlayWave_("mm.wav")->Stop();
-	}
+
 }
 
 void GameScene::Draw() {
@@ -347,8 +387,21 @@ void GameScene::Draw() {
 	player->Draw();
 	reticle->Draw();
 	zango->Draw();
-	for (int i = 1; i < 5; i++) {
+	for (int i = 0; i < _countof(enemys); i++) {
+		if (enemys[i].isDead == false) {
+			enemys[i].obj3d.Draw();
+		}
+	}
+	for (int i = 1; i < _countof(PopPos_); i++) {
 		PopPos_[i]->Draw();
+	}
+	//弾描画
+	for (std::unique_ptr<Bullet>& bullet : bullets_) {
+		bullet->obj3d.Draw();
+	}
+	//弾描画
+	for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
+		Ebullet->obj3d.Draw();
 	}
 
 
@@ -368,7 +421,7 @@ void GameScene::Reticle3D() {
 	if (len != 0) {
 		offset /= len;
 	}
-	offset *= 10;
+	offset *= -80;
 	reticle->wtf.position = offset;
 	reticle->wtf.scale = Vector3(0.5f, 0.5f, 0.5f);
 	reticle->wtf.matWorld = Affin::matScale(reticle->wtf.scale);
@@ -380,31 +433,46 @@ void GameScene::Reticle3D() {
 
 void GameScene::Attack()
 {
+	if (coolTime <= 0) {
+		//弾を生成し、初期化
+		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 
-	if (input->PushKey(DIK_SPACE))
-	{
-		if (coolTime == 0) {
-			//弾を生成し、初期化
-			std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
+		//Bullet* newbullet = new Bullet();
+		//pos = Affin::GetWorldTrans(player->wtf.matWorld);
+		pos.y = 0;
+		pos = {10,0,10};		
+		ret3DPos = Affin::GetWorldTrans(reticle->wtf.matWorld);
+		velo = ret3DPos - pos;
+		velo.nomalize();
+		resultRet = velo * newBullet->speed;
+		resultRet.nomalize();
+		newBullet->Initialize(reticleMD, pos);
 
-			//Bullet* newbullet = new Bullet();
-			pos = Affin::GetWorldTrans(player->wtf.matWorld);
-			pos.y = 0;
-			ret3DPos = Affin::GetWorldTrans(reticle->wtf.matWorld);
-			velo = ret3DPos - pos;
-			velo.nomalize();
-			resultRet = velo * newBullet->speed;
-			resultRet.nomalize();
-			newBullet->Initialize(reticleMD, pos);
+		//弾を登録
+		bullets_.push_back(std::move(newBullet));
 
-			//弾を登録
-			bullets_.push_back(std::move(newBullet));
+		//クールタイムをリセット
+		coolTime = 25;
+	}
+	else {
+		coolTime--;
+	}
 
-			//クールタイムをリセット
-			coolTime = 25;
+}
+
+int GameScene::CheckAlive(Enemy enemys_[]) {
+	aliveNum = 0;
+
+	for (int i = 0; i < _countof(enemys); i++) {
+		if (enemys[i].isDead == false) {
+			aliveNum++;
 		}
-		else {
-			coolTime--;
-		}
+	}
+
+	if (aliveNum == 0) {
+		return true;
+	}
+	else {
+		return false;
 	}
 }

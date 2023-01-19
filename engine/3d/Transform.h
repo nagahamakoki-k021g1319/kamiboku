@@ -1,9 +1,14 @@
 #pragma once
 
 #include "Matrix4.h"
+#include "Affin.h"
 
 class Transform
 {
+public:
+	Transform();
+	~Transform();
+	void Initialize();
 public:
 	// ローカルスケール
 	Vector3 scale = { 1,1,1 };
@@ -12,6 +17,6 @@ public:
 	// ローカル座標
 	Vector3 position = { 0,0,0 };
 	// ローカルワールド変換行列
-	Matrix4 matWorld;
+	Matrix4 matWorld = Affin::matUnit();
 
 };
