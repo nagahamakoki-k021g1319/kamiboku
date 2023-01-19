@@ -14,10 +14,8 @@ void Bullet::Initialize(Model* model, const Vector3& position,Vector3 move)
 	obj3d.SetModel(model);
 	movector = move;
 
-	//obj3d.translation_ = position;
-	obj3d.wtf.matWorld = Affin::matScale(0.5f, 0.5f, 0.5f);
-	obj3d.wtf.matWorld = Affin::matTrans(position);
-	//obj3d.Update();
+	obj3d.wtf.scale = Vector3(0.5f, 0.5f, 0.5f);
+	obj3d.wtf.position = position;
 }
 
 void Bullet::Update(Vector3 trans,View* view)

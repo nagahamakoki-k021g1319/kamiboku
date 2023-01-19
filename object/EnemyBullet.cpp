@@ -16,11 +16,9 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, Vector3 vect
 	obj3d.Initialize();
 	obj3d.SetModel(model);
 	obj3d.wtf.Initialize();
-	//obj3d.scale_ = Vector3(0.5f, 0.5f, 0.5f);
+	obj3d.wtf.scale = Vector3(0.5f, 0.5f, 0.5f);
 	obj3d.wtf.position = position;
 	obj3d.wtf.matWorld *= Affin::matWorld(obj3d.wtf.position, obj3d.wtf.rotation, obj3d.wtf.scale);
-
-	//obj3d.Update();
 }
 
 void EnemyBullet::Update(View* view)

@@ -28,10 +28,6 @@ void Enemy::CalcVec(Vector3 obj) {
 
 void Enemy::Update(Model* model_, Vector3 obj,View* view) {
 	assert(model_);
-	////ƒfƒXƒtƒ‰ƒO‚Ì—§‚Á‚½’e‚ğíœ
-	//bullets_.remove_if(
-	//	[](std::unique_ptr<EnemyBullet>& bullet) { return bullet->IsDead(); });
-
 
 	//ƒxƒNƒgƒ‹ŒvZ
 	CalcVec(obj);
@@ -41,13 +37,6 @@ void Enemy::Update(Model* model_, Vector3 obj,View* view) {
 	else {
 		coolTime--;
 	}
-	////’e•`‰æ
-	//for (std::unique_ptr<EnemyBullet>& Ebullet : bullets_) {
-	//	if (Ebullet->IsDead()==false) {
-	//		Ebullet->Update();
-	//	}
-	//}
-
 	//s—ñŒvZ
 
 	obj3d.wtf.matWorld = Affin::matWorld(
@@ -95,20 +84,9 @@ void Enemy::Update(Model* model_, Vector3 obj,View* view) {
 		break;
 	}
 
-
-
 	//Œ‹‰Ê‚ğ”½‰f
 	obj3d.Update(view);
-	
-	//Hit();
 }
-
-//void Enemy::Draw() {	
-//	////’e•`‰æ
-//	//for (std::unique_ptr<EnemyBullet>& Ebullet : bullets_) {
-//	//	Ebullet->Draw(viewProjection_, textureHandle_);
-//	//}
-//}
 
 void Enemy::Pop(Vector3 WorTrans, int seed, Model* model) {
 	//obj3d = Object3d::Create();

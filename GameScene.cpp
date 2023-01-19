@@ -11,6 +11,9 @@ GameScene::~GameScene() {
 	delete player;
 	delete reticle;
 	delete zango;
+	for (int i = 1; i < 5; i++) {
+		delete PopPos_[i];
+	}
 
 	//3Dモデル解放
 	delete model;
@@ -112,7 +115,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	//3Dオブジェクトの位置を指定
 	{
 		player->wtf.position = Vector3{ 0,1,15 };
-		homeOBJ->wtf.position = Vector3{ 0,1,0 };		
+		homeOBJ->wtf.position = Vector3{ 0,1,0 };
 
 		PopPos_[1]->wtf.position = Vector3{ 0,0,150 };
 		PopPos_[2]->wtf.position = Vector3{ 0,0,-150 };
@@ -167,30 +170,27 @@ void GameScene::Update() {
 	for (int i = 0; i < 5; i++) {
 		PopPos_[i]->Update(view);
 	}
-
-	Reticle3D();
-	if (input->PushKey(DIK_Q)) {
-		player->wtf.position.y = 1;
-		if (input->PushKey(DIK_SPACE))
-		{
-			Attack();
-		}
-	}
-	else {
-		player->wtf.position.y = 0;
-	}
-
 	for (std::unique_ptr<Bullet>& bullet : bullets_) {
 		bullet->Update(resultRet, view);
 	}
-
 	//敵更新
 	for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
 		Ebullet->Update(view);
 	}
 
-
-
+	{
+		Reticle3D();
+		if (input->PushKey(DIK_Q)) {
+			zango->wtf.position.y = -1;
+			if (input->PushKey(DIK_SPACE))
+			{
+				Attack();
+			}
+		}
+		else {
+			zango->wtf.position.y = 2;
+		}
+	}
 
 
 	{
@@ -259,12 +259,92 @@ void GameScene::Update() {
 
 
 	//当たり判定
-	Vector3 a = player->wtf.position;
-	Vector3 b = homeOBJ->wtf.position;
-	float xyz = std::pow(a.x - b.x, 2.0f) + std::pow(a.y - b.y, 2.0f) + std::pow(a.z - b.z, 2.0f);
-	float lenR = std::pow(1.0f + 1.0f, 2.0f);
-	if (xyz <= lenR) {
-		ischackFlag = 1;
+	{
+		Vector3 a = player->wtf.position;
+		Vector3 b = homeOBJ->wtf.position;
+		float xyz = std::pow(a.x - b.x, 2.0f) + std::pow(a.y - b.y, 2.0f) + std::pow(a.z - b.z, 2.0f);
+		float lenR = std::pow(1.0f + 1.0f, 2.0f);
+		if (xyz <= lenR) {
+			ischackFlag = 1;
+		}
+	}
+	//当たり判定
+	{
+		Vector3 a = player->wtf.position;
+		Vector3 b = homeOBJ->wtf.position;
+		float xyz = std::pow(a.x - b.x, 2.0f) + std::pow(a.y - b.y, 2.0f) + std::pow(a.z - b.z, 2.0f);
+		float lenR = std::pow(1.0f + 1.0f, 2.0f);
+		if (xyz <= lenR) {
+			ischackFlag = 1;
+		}
+	}
+	//当たり判定 pBullet->enemy
+	{
+		//判定対象aとbの座標
+		Vector3 posA, posB;
+
+		//自機弾リストの取得
+		const std::list<std::unique_ptr<Bullet>>& playerBullet = bullets_;
+		//敵の弾リストの取得
+		const std::list<std::unique_ptr<EnemyBullet>>& enemyBullet = eneBullets_;
+
+#pragma region 自キャラと敵弾の当たり判定
+		for (const std::unique_ptr<Bullet>& bullet : bullets_) {
+			posA = bullet.get()->GetWorldPosition();
+
+			//自弾と敵弾
+			for (const std::unique_ptr<EnemyBullet>& enebullet : enemyBullet) {
+				posB = bullet.get()->GetWorldPosition();
+
+				float x = posA.x - posB.x;
+				float y = posA.y - posB.y;
+				float z = posA.z - posB.z;
+
+				float distance = sqrt(x * x + y * y + z * z);
+
+				Matrix4 matA = bullet->obj3d.wtf.matWorld;
+				Matrix4 matB = enebullet->obj3d.wtf.matWorld;
+
+				//弾と弾の交差判定
+				if (distance < matA.m[0][0] + matB.m[0][0]) {	//スケールxを半径として使用
+					/*player_->OnCollision();*/
+					//enebullet->OnColision();
+				}
+
+			}
+		}
+#pragma endregion
+
+
+#pragma region 自弾と敵キャラの当たり判定
+		for (int i = 0; i < _countof(enemys); i++) {
+
+
+			//自キャラ座標
+			posA = enemys[i].GetWorldPosition();
+
+			//自キャラと敵弾
+			for (const std::unique_ptr<Bullet>& bullet : bullets_) {
+				posB = bullet.get()->GetWorldPosition();
+
+				float x = posA.x - posB.x;
+				float y = posA.y - posB.y;
+				float z = posA.z - posB.z;
+
+				float distance = sqrt(x * x + y * y + z * z);
+
+				Matrix4 matA = enemys[i].obj3d.wtf.matWorld;
+				Matrix4 matB = bullet->obj3d.wtf.matWorld;
+
+				//弾と弾の交差判定
+				if (distance <= matA.m[0][0] + matB.m[0][0]) {	//スケールxを半径として使用
+					enemys[i].OnColision();
+					bullet->OnColision();
+				}
+
+			}
+		}
+#pragma endregion
 	}
 
 	// カメラのプログラム持ってきただけ
@@ -448,13 +528,13 @@ void GameScene::Attack()
 		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 
 		pos = Affin::GetWorldTrans(player->wtf.matWorld);
-		pos.y = 0;		
+		pos.y = 0;
 		ret3DPos = Affin::GetWorldTrans(reticle->wtf.matWorld);
 		velo = ret3DPos - pos;
 		velo.nomalize();
 		resultRet = velo * newBullet->speed;
 		resultRet.nomalize();
-		newBullet->Initialize(reticleMD, pos,resultRet);
+		newBullet->Initialize(reticleMD, pos, resultRet);
 
 		//弾を登録
 		bullets_.push_back(std::move(newBullet));
