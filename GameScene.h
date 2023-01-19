@@ -15,6 +15,10 @@
 #include "Transform.h"
 #include "View.h"
 
+#include "object/Enemy.h"
+#include "object/Bullet.h"
+#include "object/EnemyBullet.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -48,7 +52,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, Input* input);
+	void Initialize(DirectXCommon* dxCommon, Input* input,GameScene* gamescene);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -60,12 +64,15 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void Reticle3D();
+	void Attack();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	Audio* audio = nullptr;
-	
+
 
 	/// <summary>
 	/// ゲームシーン用
@@ -83,17 +90,68 @@ private: // メンバ変数
 
 	Object3d* homeOBJ = nullptr;
 	Object3d* player = nullptr;
+	Object3d* reticle = nullptr;
 	Object3d* zango = nullptr;
 	Model* model = nullptr;
 	Model* model2 = nullptr;
+	Model* reticleMD = nullptr;
 	Model* zangoMD = nullptr;
 
 
 	int soundCheckFlag = 0;
 
-	View* view = nullptr;
+	GameScene* gamescene_ = nullptr;
 
-	GameScene* gamescene = nullptr;
+	// カメラ関係
+
+	View* view = nullptr;
+	// 時間計測に必要なデータ
+	long long startCount = 0;
+	long long nowCount = 0;
+	long long elapsedCount = 0;
+	float elapsedTime = 0;
+
+	// 補間で使うデータ
+	// start -> end を 5[ｓ] で完了させる
+	Vector3 p0, p1, p2, p3;
+	//Vector3 p0, p1, p2, p3;
+	float maxTime = 50.0f;
+	float timeRate;
+	float maxTimeRate;
+	int cameraState = 0;
+
+	Vector3 ai;
+
+	// 3Dレティクル用ワールドトランスフォーム
+	float kDistancePlayerTo3DReticle = -80.0f;
+	Vector3 ret3DPos;
+	Vector3 myPos;
+	Vector3 resultRet;
+
+	// 敵
+	Enemy enemys[50];
+	Object3d* PopPos_[5];
+
+	//弾
+	std::list<std::unique_ptr<EnemyBullet>> eneBullets_;
+	// 敵
+	int popTime;
+	int coolTime;
+	int killCounter;
+	int popCount = 0;
+	int wave = 0;
+	int waitTimer = 250;
+
+	//弾
+	std::list<std::unique_ptr<Bullet>> bullets_;
+	Vector3 pos;
+	Vector3 moveBul;
+	Vector3 velo;
 	
+
+	float KEyeSpeed = 0.0f;
+	float addspeed = 0.0f;
+
+
 };
 

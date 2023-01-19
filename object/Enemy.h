@@ -42,11 +42,12 @@ public:
 	~Enemy();
 
 	void Update(Model*model_,Vector3 obj,View& view);
+	void Draw();
 	//void Draw(ViewProjection& viewProjection_, uint32_t textureHandle_);
 	
 	void CalcVec(Vector3 view);
 	void Pop(Vector3 WorTrans, int seed_);
-	void Hit();
+	void Hit();	
 	Vector3 GetWorldPosition() { return Affin::GetWorldTrans(worldTransForm.wtf.matWorld); };
 	Vector3 GetFrontVec() { return enemyFront; };
 	void SetGameScene(GameScene* gameScene_) { gameScene = gameScene_; };

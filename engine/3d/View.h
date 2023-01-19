@@ -7,7 +7,7 @@ class View
 public:
 	View();
 	~View();
-
+	void Initialize();
 	float FieldOfViewY(float focalLengs, float sensor);
 
 public:

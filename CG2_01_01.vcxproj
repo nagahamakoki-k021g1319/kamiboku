@@ -140,7 +140,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)engine\math;$(SolutionDir)engine\input;$(SolutionDir)engine\Audio;$(SolutionDir)engine\base;$(SolutionDir)engine\2d;$(SolutionDir)engine\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)object;$(SolutionDir)engine\math;$(SolutionDir)engine\input;$(SolutionDir)engine\Audio;$(SolutionDir)engine\base;$(SolutionDir)engine\2d;$(SolutionDir)engine\3d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -428,6 +428,7 @@ void Object3d::Update(View* view)
 	eye = ConvertXM::ConvertVec3toXMFlo3(view->eye);
 	target = ConvertXM::ConvertVec3toXMFlo3(view->target);
 	up = ConvertXM::ConvertVec3toXMFlo3(view->up);
+	focalLengs = view->focalLengs;
 
 
 	HRESULT result;
