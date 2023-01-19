@@ -111,13 +111,17 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	}
 	//3Dオブジェクトの位置を指定
 	{
-		player->wtf.position = Vector3{ 0,0,50 };
-		zango->wtf.scale = (Vector3{ 5, 3.5f, 5 });
+		player->wtf.position = Vector3{ 0,1,15 };
+		homeOBJ->wtf.position = Vector3{ 0,1,0 };		
 
-		PopPos_[1]->wtf.position = Vector3{ 0,0,80 };
-		PopPos_[2]->wtf.position = Vector3{ 0,0,-80 };
-		PopPos_[3]->wtf.position = Vector3{ 80,0,0 };
-		PopPos_[4]->wtf.position = Vector3{ -80,0,0 };
+		PopPos_[1]->wtf.position = Vector3{ 0,0,150 };
+		PopPos_[2]->wtf.position = Vector3{ 0,0,-150 };
+		PopPos_[3]->wtf.position = Vector3{ 150,0,0 };
+		PopPos_[4]->wtf.position = Vector3{ -150,0,0 };
+	}
+	{
+		homeOBJ->wtf.scale = Vector3{ 3,3,3 };
+		zango->wtf.scale = (Vector3{ 5, 3.5f, 5 });
 	}
 
 
@@ -165,9 +169,15 @@ void GameScene::Update() {
 	}
 
 	Reticle3D();
-	if (input->PushKey(DIK_SPACE))
-	{
-		Attack();
+	if (input->PushKey(DIK_Q)) {
+		player->wtf.position.y = 1;
+		if (input->PushKey(DIK_SPACE))
+		{
+			Attack();
+		}
+	}
+	else {
+		player->wtf.position.y = 0;
 	}
 
 	for (std::unique_ptr<Bullet>& bullet : bullets_) {
@@ -421,7 +431,7 @@ void GameScene::Reticle3D() {
 	if (len != 0) {
 		offset /= len;
 	}
-	offset *= -80;
+	offset *= -100;
 	reticle->wtf.position = offset;
 	reticle->wtf.scale = Vector3(0.5f, 0.5f, 0.5f);
 	reticle->wtf.matWorld = Affin::matScale(reticle->wtf.scale);
@@ -437,16 +447,14 @@ void GameScene::Attack()
 		//弾を生成し、初期化
 		std::unique_ptr<Bullet> newBullet = std::make_unique<Bullet>();
 
-		//Bullet* newbullet = new Bullet();
-		//pos = Affin::GetWorldTrans(player->wtf.matWorld);
-		pos.y = 0;
-		pos = {10,0,10};		
+		pos = Affin::GetWorldTrans(player->wtf.matWorld);
+		pos.y = 0;		
 		ret3DPos = Affin::GetWorldTrans(reticle->wtf.matWorld);
 		velo = ret3DPos - pos;
 		velo.nomalize();
 		resultRet = velo * newBullet->speed;
 		resultRet.nomalize();
-		newBullet->Initialize(reticleMD, pos);
+		newBullet->Initialize(reticleMD, pos,resultRet);
 
 		//弾を登録
 		bullets_.push_back(std::move(newBullet));

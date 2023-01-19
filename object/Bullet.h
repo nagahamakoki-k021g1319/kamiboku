@@ -14,7 +14,7 @@ class Bullet
 {
 public:
 	//~Bullet();
-	void Initialize(Model* model, const Vector3& position);
+	void Initialize(Model* model, const Vector3& position,Vector3 move);
 
 	void Update(Vector3 trans,View* view);
 
