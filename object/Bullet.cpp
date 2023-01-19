@@ -23,7 +23,7 @@ void Bullet::Initialize(Model* model, const Vector3& position,Vector3 move)
 void Bullet::Update(Vector3 trans,View* view)
 {
 
-	obj3d.wtf.position += movector;
+	obj3d.wtf.position += (movector*1.5f);
 	//çsóÒÇÃçƒåvéZ
 	obj3d.Update(view);
 }
