@@ -1,5 +1,4 @@
 ﻿#include "Object3d.h"
-
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 #include <fstream>

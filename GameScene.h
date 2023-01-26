@@ -9,7 +9,10 @@
 #include "Model.h"
 #include "Audio.h"
 #include <string>
-
+#include "ParticleManager.h"
+#include "DebugCamera.h"
+#include "FBXObject3d.h"
+#include "FbxLoader.h"
 
 /// <summary>
 /// ゲームシーン
@@ -57,6 +60,8 @@ public: // メンバ関数
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
+	//FBXで使うカメラ(ビュープロジェクション?みたいな)
+	DebugCamera* camera = nullptr;
 	Input* input = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	Audio* audio = nullptr;
@@ -84,5 +89,18 @@ private: // メンバ変数
 
 	int soundCheckFlag = 0;
 	
+	//パーティクルクラスの初期化 
+	ParticleManager* particleManager = nullptr;
+
+	FBXModel* fbxModel_ = nullptr;
+	FBXObject3d* fbxObject3d_ = nullptr;
+
+	FBXModel* fbxModel2_ = nullptr;
+	FBXObject3d* fbxObject3d_2 = nullptr;
+
+public:
+	//音を止める関数
+	IXAudio2SourceVoice* pSourceVoice[10] = { 0 };
+
 };
 

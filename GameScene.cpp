@@ -14,6 +14,13 @@ GameScene::~GameScene() {
 	delete model;
 	delete model2;
 
+	//FBXオブジェクト解放
+	delete fbxObject3d_;
+	delete fbxModel_;
+
+	delete fbxObject3d_2;
+	delete fbxModel2_;
+
 	//オーディオ解放
 	audio->Finalize();
 	delete audio;
@@ -31,6 +38,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	//スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon;
 	spriteCommon->Initialize(dxCommon);
+
+	// カメラ生成
+	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
+	FBXObject3d::SetCamera(camera);
+
 
 	//スプライトの初期化
 	{
@@ -78,6 +90,34 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 		object3d_2->SetPosition({ -5,-5,0 });
 	}
 
+	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
+	fbxModel2_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
+
+	// デバイスをセット
+	FBXObject3d::SetDevice(dxCommon->GetDevice());
+	// グラフィックスパイプライン生成
+	FBXObject3d::CreateGraphicsPipeline();
+
+
+	fbxObject3d_ = new FBXObject3d;
+	fbxObject3d_->Initialize();
+	fbxObject3d_->SetModel(fbxModel_);
+	fbxObject3d_->SetScale({ 0.01,0.01,0.01 });
+	fbxObject3d_->SetPosition({ 0,-10,40 });
+	fbxObject3d_->PlayAnimation();
+
+	fbxObject3d_2 = new FBXObject3d;
+	fbxObject3d_2->Initialize();
+	fbxObject3d_2->SetModel(fbxModel2_);
+	fbxObject3d_2->SetScale({ 0.01,0.01,0.01 });
+	fbxObject3d_2->SetPosition({ -10,-10,40 });
+	fbxObject3d_2->PlayAnimation();
+
+
+
+	// パーティクル生成
+	particleManager = ParticleManager::Create();
+	particleManager->Update();
 
 	audio = new Audio();
 	audio->Initialize();
@@ -90,6 +130,27 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 
 
 void GameScene::Update() {
+	//音声再生
+	if (soundCheckFlag == 0) {
+		//音声再生
+		pSourceVoice[0] = audio->PlayWave("tit.wav");
+		soundCheckFlag = 1;
+	}
+	if (input->TriggerKey(DIK_E)) {
+		pSourceVoice[0]->Stop();
+	}
+	if (input->TriggerKey(DIK_Z)) {
+		pSourceVoice[0]->SetVolume(0.1f);
+	}if (input->TriggerKey(DIK_X)) {
+		pSourceVoice[0]->SetVolume(1.0f);
+	}
+
+
+	if (input->TriggerKey(DIK_SPACE)) {
+		//音声再生
+		audio->PlayWave("cr.wav");
+	}
+	camera->Update();
 	object3d->Update();
 	// オブジェクト移動
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
@@ -122,17 +183,41 @@ void GameScene::Update() {
 		ischackFlag = 0;
 	}
 
+	// パーティクル起動(長押し)
+	if (input->PushKey(DIK_P)) {
+		particleManager->Update();
+		//パーティクル範囲
+		for (int i = 0; i < 20; i++) {
+			//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+			const float rnd_pos = 10.0f;
+			//const float rnd_posX = 1.0f;
+			XMFLOAT3 pos{};
+			pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+			pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+			pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
 
-	//音声再生
-	if (soundCheckFlag == 0) {
-		//音声再生
-		audio->PlayWave("tit.wav");
-		soundCheckFlag = 1;
+			//速度
+			//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+			const float rnd_vel = 0.5f;
+			XMFLOAT3 vel{};
+			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+			const float rnd_acc = 0.001f;
+			XMFLOAT3 acc{};
+			acc.y = (float)rand() / RAND_MAX * rnd_acc;
+
+			//追加
+			particleManager->Add(60, pos, vel, acc, 1.0f, 0.0f);
+		}
 	}
-	if (input->TriggerKey(DIK_SPACE)) {
-		//音声再生
-		audio->PlayWave("cr.wav");
-	}
+
+	fbxObject3d_->Update();
+	fbxObject3d_2->Update();
+
+
+	
 
 
 }
@@ -157,9 +242,22 @@ void GameScene::Draw() {
 	object3d->Draw();
 	object3d_2->Draw();
 
+	fbxObject3d_->Draw(dxCommon->GetCommandList());
+	fbxObject3d_2->Draw(dxCommon->GetCommandList());
+
+
+
+
 
 	//3Dオブジェクト描画後処理
 	Object3d::PostDraw();
 
+	// 3Dオブジェクト描画前処理
+	ParticleManager::PreDraw(dxCommon->GetCommandList());
 
+	// 3Dオブクジェクトの描画
+	particleManager->Draw();
+
+	// 3Dオブジェクト描画後処理
+	ParticleManager::PostDraw();
 }
