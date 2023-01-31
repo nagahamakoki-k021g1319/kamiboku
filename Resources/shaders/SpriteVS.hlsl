@@ -1,7 +1,8 @@
 #include "Sprite.hlsli"
 
-VSOutput main(float4 pos : POSITION, float2 uv : TEXCOORD) {
-	VSOutput output; // 繝斐け繧ｻ繝ｫ繧ｷ繧ｧ繝ｼ繝繝ｼ縺ｫ貂｡縺吝､
+VSOutput main(float4 pos : POSITION, float2 uv : TEXCOORD)
+{
+	VSOutput output;//ピクセルシェーダーに渡す値
 	output.svpos = mul(mat, pos);
 	output.uv = uv;
 	return output;

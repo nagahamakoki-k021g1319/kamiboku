@@ -18,7 +18,7 @@ void Bullet::Initialize(Model* model, const Vector3& position,Vector3 move)
 	obj3d.wtf.position = position;
 }
 
-void Bullet::Update(Vector3 trans,View* view)
+void Bullet::Update(View* view)
 {
 
 	obj3d.wtf.position += (movector*1.5f);

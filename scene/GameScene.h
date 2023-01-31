@@ -91,17 +91,27 @@ private: // メンバ変数
 	Sprite* sprite2 = new Sprite();
 	XMFLOAT2 position2 = sprite2->GetPosition();
 
+	Sprite* titleSP = new Sprite();
+	XMFLOAT2 titlePOS = titleSP->GetPosition();
+	Sprite* endSP = new Sprite();
+	XMFLOAT2 endPOS = endSP->GetPosition();
+
+	Sprite* retSP = new Sprite();
+	XMFLOAT2 retPOS = retSP->GetPosition();
+
 	int ischackFlag = 0;
 
 	Object3d* homeOBJ = nullptr;
 	Object3d* player = nullptr;
 	Object3d* reticle = nullptr;
 	Object3d* zango = nullptr;
+	Object3d* floor = nullptr;
 	Model* model = nullptr;
 	Model* model2 = nullptr;
 	Model* reticleMD = nullptr;
 	Model* zangoMD = nullptr;
 	Model* eneMD = nullptr;
+	Model* floorMD = nullptr;
 
 
 	int soundCheckFlag = 0;
@@ -130,9 +140,9 @@ private: // メンバ変数
 
 	// 3Dレティクル用ワールドトランスフォーム
 	float kDistancePlayerTo3DReticle = -80.0f;
-	Vector3 ret3DPos{0,0,0};
-	Vector3 myPos = {0,0,0};
-	Vector3 resultRet={0,0,0};
+	Vector3 ret3DPos{ 0,0,0 };
+	Vector3 myPos = { 0,0,0 };
+	Vector3 resultRet = { 0,0,0 };
 
 	// 敵
 	Enemy enemys[50];
@@ -141,6 +151,7 @@ private: // メンバ変数
 
 	//弾
 	std::list<std::unique_ptr<EnemyBullet>> eneBullets_;
+
 	// 敵
 	int popTime = 0;
 	int coolTime = 0;
@@ -149,15 +160,19 @@ private: // メンバ変数
 	int wave = 0;
 	int waitTimer = 250;
 
-	//弾
+	//自弾
 	std::list<std::unique_ptr<Bullet>> bullets_;
 	Vector3 pos;
 	Vector3 moveBul;
 	Vector3 velo;
+	int	burstBL = 0;
+	int burstCoolTime = 0;
 
 
 	float KEyeSpeed = 0.0f;
 	float addspeed = 0.0f;
+
+	int scene = 0;
 
 
 };

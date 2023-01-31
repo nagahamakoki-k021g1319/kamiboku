@@ -16,7 +16,7 @@ public:
 	//~Bullet();
 	void Initialize(Model* model, const Vector3& position,Vector3 move);
 
-	void Update(Vector3 trans,View* view);
+	void Update(View* view);
 
 	void Draw();
 
@@ -27,7 +27,7 @@ public:
 	bool IsDead() const { return isDead; }
 
 public:
-	const float speed = 10;
+	const float speed = 40;
 	const int r = 2;
 	Object3d obj3d;
 private:

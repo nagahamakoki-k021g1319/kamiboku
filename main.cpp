@@ -65,9 +65,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region ウィンドウメッセージ処理
 	
 		//アプリケーションが終わる時にmessageがWM_QUITになる
-		if (msg.message == WM_QUIT) {
+		/*if (winApp->ProcessMessage()) {
 			break;
-		}
+		}*/
 		if (input->PushKey(DIK_ESCAPE)) {
 			break;
 		}
