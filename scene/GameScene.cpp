@@ -52,11 +52,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	//スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon;
 	spriteCommon->Initialize(dxCommon);
-	
+
 	// カメラ生成
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 	FBXObject3d::SetCamera(camera);
-	
+
 	//ビューの生成
 	{
 		view = new View();
@@ -246,9 +246,9 @@ void GameScene::Update() {
 		elapsedCount = 0;
 		elapsedTime = 0;
 		maxTime = 50.0f;
-		timeRate;
-		maxTimeRate;
-		cameraState = 0;
+		timeRate = 0;
+		maxTimeRate = 0;
+		cameraState = 2;
 		// 敵
 		popTime = 0;
 		coolTime = 0;
@@ -257,7 +257,7 @@ void GameScene::Update() {
 		wave = 0;
 		waitTimer = 250;
 
-
+		HP = 10;
 
 		break;
 
@@ -380,9 +380,10 @@ void GameScene::Update() {
 
 	case 2: // game
 		isDireFlag = 0;
+		isHit = 0;
 
 		// オブジェクト移動
-		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
 		{
 			// 現在の座標を取得
 			Vector3 rotate = homeOBJ->wtf.rotation;
@@ -390,17 +391,17 @@ void GameScene::Update() {
 			// 移動後の座標を計算
 			/*if (input->PushKey(DIK_UP)) { rotate.x += 0.5f; }
 			else if (input->PushKey(DIK_DOWN)) { rotate.x -= 0.5f; }*/
-		
-			if (input->PushKey(DIK_RIGHT)) { 
+
+			if (input->PushKey(DIK_D)) {
 				isDireFlag = 2;
-				rotate.y += 1.0f; 
+				rotate.y += 1.0f;
 			}
-			if (input->PushKey(DIK_LEFT)) { 
+			if (input->PushKey(DIK_A)) {
 				isDireFlag = 1;
-				rotate.y -= 1.0f; 
+				rotate.y -= 1.0f;
 			}
-				
-			
+
+
 			// 座標の変更を反映
 
 			homeOBJ->wtf.rotation = rotate;
@@ -412,7 +413,7 @@ void GameScene::Update() {
 		skydome->Update(view);
 		//敵ポップ
 		for (int i = 0; i < _countof(enemys); i++) {
-			enemys[i].Update(eneMD, Affin::GetWorldTrans(homeOBJ->wtf.matWorld), view);
+			enemys[i].Update(eneMD, Affin::GetWorldTrans(player->wtf.matWorld), view);
 		}
 		for (int i = 0; i < 5; i++) {
 			PopPos_[i]->Update(view);
@@ -604,6 +605,77 @@ void GameScene::Update() {
 			}
 #pragma endregion
 		}
+		//当たり判定 eBullet->player
+		{
+			if (input->PushKey(DIK_Q) && cameraState == 0 || cameraState == 1) {
+				//判定対象aとbの座標
+				Vector3 posA, posB;
+
+				//敵の弾リストの取得
+				const std::list<std::unique_ptr<EnemyBullet>>& enemyBullet = eneBullets_;
+
+				posA = Affin::GetWorldTrans(player->wtf.matWorld);
+
+				//自弾と敵弾
+				for (const std::unique_ptr<EnemyBullet>& enebullet : enemyBullet) {
+					posB = enebullet.get()->GetWorldPosition();
+
+					float x = posA.x - posB.x;
+					float y = posA.y - posB.y;
+					float z = posA.z - posB.z;
+
+					float distance = sqrt(x * x + z * z);// Yの計算抜いた
+
+					Matrix4 matA = player->wtf.matWorld;
+					Matrix4 matB = enebullet->obj3d.wtf.matWorld;
+
+					//弾と弾の交差判定
+					if (distance < 3 + matB.m[0][0]) {	//スケールxを半径として使用
+						isHit = 1;
+						enebullet->OnColision();
+					}
+
+				}
+			}
+			if (isHit == 1) {
+				HP--;
+			}
+			if (HP < 0) {
+				scene = 3;
+			}			
+		}
+		//当たり判定 eBullet->zango
+		{
+			if (!input->PushKey(DIK_Q)||cameraState==2||cameraState==3) {
+
+
+				//判定対象aとbの座標
+				Vector3 posA, posB;
+				//敵の弾リストの取得
+				const std::list<std::unique_ptr<EnemyBullet>>& enemyBullet = eneBullets_;
+				posA = Affin::GetWorldTrans(homeOBJ->wtf.matWorld);
+
+				//自弾と敵弾
+				for (const std::unique_ptr<EnemyBullet>& enebullet : enemyBullet) {
+					posB = enebullet.get()->GetWorldPosition();
+
+					float x = posA.x - posB.x;
+					float y = posA.y - posB.y;
+					float z = posA.z - posB.z;
+
+					float distance = sqrt(x * x + y * y + z * z);
+
+					Matrix4 matA = homeOBJ->wtf.matWorld;
+					Matrix4 matB = enebullet->obj3d.wtf.matWorld;
+
+					//弾と弾の交差判定
+					if (distance < 70 + matB.m[0][0]) {	//スケールxを半径として使用
+						enebullet->OnColision();
+					}
+
+				}
+			}
+		}
 
 		// カメラのプログラム持ってきただけ
 		{
@@ -614,7 +686,7 @@ void GameScene::Update() {
 			// 移動完了の率（経過時間/全体時間） ：timeRate (%)
 			nowCount++;
 
-			if (input->TriggerKey(DIK_R)) {
+			if (input->TriggerKey(DIK_E)) {
 				startCount = nowCount;
 				switch (cameraState)
 				{
@@ -696,9 +768,12 @@ void GameScene::Update() {
 		}
 
 
+
+
+
 		// パーティクル起動(長押し)
 		if (input->TriggerKey(DIK_P)) {
-			
+
 			//パーティクル範囲
 			for (int i = 0; i < 50; i++) {
 				//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
@@ -762,7 +837,7 @@ void GameScene::Draw() {
 		break;
 	case 1:// 
 	case 2: // game
-		sprite->Draw();
+
 
 		if (ischackFlag == 0) {
 			sprite1->Draw();
@@ -778,10 +853,10 @@ void GameScene::Draw() {
 		/// <summary>
 
 		//3Dオブジェクトの描画
-		homeOBJ->Draw();
+		//homeOBJ->Draw();
 		player->Draw();
 
-		
+
 
 		//reticle->Draw();
 		zango->Draw();
@@ -819,8 +894,15 @@ void GameScene::Draw() {
 		ParticleManager::PostDraw();
 
 		// 前景スプライト
+		if (input->ReleaseKey(DIK_Y)) {
 
-		retSP->Draw();
+			sprite->Draw();
+		}
+		if (input->PushKey(DIK_Q) && cameraState == 0 || cameraState == 1) {
+
+			retSP->Draw();
+		}
+
 		break;
 	}
 
@@ -828,8 +910,10 @@ void GameScene::Draw() {
 }
 
 void GameScene::Reticle3D() {
+
 	//自機から3Dレティクルへのオフセット(Z+向き)
 	Vector3 offset = { 0.0f, 0, -1.0f };
+
 	if (isDireFlag == 1) {
 		offset.x = 1.0f;
 	}
@@ -843,11 +927,8 @@ void GameScene::Reticle3D() {
 	//自機のワールド行列の回転を反映
 	offset = Affin::VecMat(offset, player->wtf.matWorld);
 	//ベクトルの長さを整える
-	//offset.nomalize();
-	float len = sqrt(offset.x * offset.x + offset.y * offset.y + offset.z * offset.z);
-	if (len != 0) {
-		offset /= len;
-	}
+	offset.nomalize();
+
 	offset *= -100;
 	reticle->wtf.position = offset;
 	reticle->wtf.scale = Vector3(0.5f, 0.5f, 0.5f);

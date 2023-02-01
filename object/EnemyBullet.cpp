@@ -11,7 +11,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, Vector3 vect
 	//eneVec.nomalize();
 
 	isDead = false;
-	deadCount = 150;
+	deadCount = 300;
 
 	obj3d.Initialize();
 	obj3d.SetModel(model);

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "DirectXCommon.h"
 #include <DirectXMath.h>
@@ -27,46 +27,46 @@
 
 
 /// <summary>
-/// ƒQ[ƒ€ƒV[ƒ“
+/// ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³
 /// </summary>
 class GameScene
 {
-private: // ƒGƒCƒŠƒAƒX
-	// Microsoft::WRL::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// Microsoft::WRL::ã‚’çœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	// DirectX::‚ğÈ—ª
+	// DirectX::ã‚’çœç•¥
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
-private: // Ã“Iƒƒ“ƒo•Ï”
+private: // é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°
 	static const int debugTextTexNumber = 0;
 
-public: // ƒƒ“ƒoŠÖ”
+public: // ãƒ¡ãƒ³ãƒé–¢æ•°
 
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒNƒ‰ƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆã‚¯ãƒ©ã‚¿
 	/// </summary>
 	GameScene();
 
 	/// <summary>
-	/// ƒfƒXƒgƒ‰ƒNƒ^
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	~GameScene();
 
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
 	void Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gamescene);
 
 	/// <summary>
-	/// –ˆƒtƒŒ[ƒ€ˆ—
+	/// æ¯ãƒ•ãƒ¬ãƒ¼ãƒ å‡¦ç†
 	/// </summary>
 	void Update();
 
 	/// <summary>
-	/// •`‰æ
+	/// æç”»
 	/// </summary>
 	void Draw();
 
@@ -78,9 +78,9 @@ public: // ƒƒ“ƒoŠÖ”
 	}
 	int CheckAlive(Enemy enemys_[]);
 
-private: // ƒƒ“ƒo•Ï”
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
 	DirectXCommon* dxCommon = nullptr;
-	//FBX‚Åg‚¤ƒJƒƒ‰(ƒrƒ…[ƒvƒƒWƒFƒNƒVƒ‡ƒ“?‚İ‚½‚¢‚È)
+	//FBXã§ä½¿ã†ã‚«ãƒ¡ãƒ©(ãƒ“ãƒ¥ãƒ¼ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³?ã¿ãŸã„ãª)
 	DebugCamera* camera = nullptr;
 	Input* input = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
@@ -88,7 +88,7 @@ private: // ƒƒ“ƒo•Ï”
 
 
 	/// <summary>
-	/// ƒQ[ƒ€ƒV[ƒ“—p
+	/// ã‚²ãƒ¼ãƒ ã‚·ãƒ¼ãƒ³ç”¨
 	/// </summary>
 	Sprite* sprite = new Sprite();
 	XMFLOAT2 position = sprite->GetPosition();
@@ -133,17 +133,16 @@ private: // ƒƒ“ƒo•Ï”
 
 	GameScene* gamescene_ = nullptr;
 
-	// ƒJƒƒ‰ŠÖŒW
-
+	// ã‚«ãƒ¡ãƒ©é–¢ä¿‚
 	View* view = nullptr;
-	// ŠÔŒv‘ª‚É•K—v‚Èƒf[ƒ^
+	// æ™‚é–“è¨ˆæ¸¬ã«å¿…è¦ãªãƒ‡ãƒ¼ã‚¿
 	long long startCount = 0;
 	long long nowCount = 0;
 	long long elapsedCount = 0;
 	float elapsedTime = 0;
 
-	// •âŠÔ‚Åg‚¤ƒf[ƒ^
-	// start -> end ‚ğ 5[‚“] ‚ÅŠ®—¹‚³‚¹‚é
+	// è£œé–“ã§ä½¿ã†ãƒ‡ãƒ¼ã‚¿
+	// start -> end ã‚’ 5[ï½“] ã§å®Œäº†ã•ã›ã‚‹
 	Vector3 p0, p1, p2, p3;
 	//Vector3 p0, p1, p2, p3;
 	float maxTime = 50.0f;
@@ -153,21 +152,21 @@ private: // ƒƒ“ƒo•Ï”
 
 	Vector3 ai;
 
-	// 3DƒŒƒeƒBƒNƒ‹—pƒ[ƒ‹ƒhƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+	// 3Dãƒ¬ãƒ†ã‚£ã‚¯ãƒ«ç”¨ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 	float kDistancePlayerTo3DReticle = -80.0f;
 	Vector3 ret3DPos{ 0,0,0 };
 	Vector3 myPos = { 0,0,0 };
 	Vector3 resultRet = { 0,0,0 };
 
-	// “G
-	Enemy enemys[50];
+	// æ•µ
+	Enemy enemys[70];
 	Object3d* PopPos_[5];
 	int aliveNum = 0;
 
-	//’e
+	//å¼¾
 	std::list<std::unique_ptr<EnemyBullet>> eneBullets_;
 
-	// “G
+	// æ•µ
 	int popTime = 0;
 	int coolTime = 0;
 	int killCounter;
@@ -175,7 +174,7 @@ private: // ƒƒ“ƒo•Ï”
 	int wave = 0;
 	int waitTimer = 250;
 
-	//©’e
+	//è‡ªå¼¾
 	std::list<std::unique_ptr<Bullet>> bullets_;
 	Vector3 pos;
 	Vector3 moveBul;
@@ -189,14 +188,17 @@ private: // ƒƒ“ƒo•Ï”
 
 	int scene = 0;
 
-	//ƒp[ƒeƒBƒNƒ‹ƒNƒ‰ƒX‚Ì‰Šú‰» 
+	//ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ– 
 	ParticleManager* particleManager = nullptr;
 	int PTtime = 0;
 	bool isPTflag = false;
 
-	//¶‰E‚ÌƒIƒtƒZƒbƒg•ÏX(Z + Œü‚«) ¶‚ªƒtƒ‰ƒO1 ¶‚ªƒtƒ‰ƒO2
+	//å·¦å³ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆå¤‰æ›´(Z + å‘ã) å·¦ãŒãƒ•ãƒ©ã‚°1 å·¦ãŒãƒ•ãƒ©ã‚°2
 	int isDireFlag = 0;
 
+	int isHit;
+	int HP = 10;
+	
 
 };
 
