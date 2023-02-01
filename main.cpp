@@ -3,11 +3,13 @@
 #include "WinApp.h"
 #include "DirectXCommon.h"
 #include "GameScene.h"
+#include <fbxsdk.h>
+
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region WindowsAPI初期化処理
-
+	FbxManager* fbxManager = FbxManager::Create();
 
 	//ポインタ
 	WinApp* winApp = nullptr;
@@ -65,9 +67,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region ウィンドウメッセージ処理
 	
 		//アプリケーションが終わる時にmessageがWM_QUITになる
-		/*if (winApp->ProcessMessage()) {
+		if (winApp->ProcessMessage()) {
 			break;
-		}*/
+		}
 		if (input->PushKey(DIK_ESCAPE)) {
 			break;
 		}

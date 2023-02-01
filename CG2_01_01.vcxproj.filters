@@ -148,15 +148,6 @@
     <ClCompile Include="object\Player.cpp">
       <Filter>user\ソース</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\FBX\FbxLoader.cpp">
-      <Filter>engin\ソース ファイル\3d\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\FBX\FBXModel.cpp">
-      <Filter>engin\ソース ファイル\3d\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="engine\3d\FBX\FBXObject3d.cpp">
-      <Filter>engin\ソース ファイル\3d\FBX</Filter>
-    </ClCompile>
     <ClCompile Include="engine\3d\Particle\ParticleManager.cpp">
       <Filter>engin\ソース ファイル\3d\Particle</Filter>
     </ClCompile>
@@ -279,15 +270,6 @@
     </ClInclude>
     <ClInclude Include="object\Player.h">
       <Filter>user\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\FBX\FbxLoader.h">
-      <Filter>engin\ヘッダー ファイル\3d\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\FBX\FBXModel.h">
-      <Filter>engin\ヘッダー ファイル\3d\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\FBX\FBXObject3d.h">
-      <Filter>engin\ヘッダー ファイル\3d\FBX</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Particle\ParticleManager.h">
       <Filter>engin\ヘッダー ファイル\3d\Particle</Filter>

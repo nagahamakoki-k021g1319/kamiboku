@@ -104,6 +104,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		zangoMD = Model::LoadFromOBJ("zango");
 		eneMD = Model::LoadFromOBJ("ene");
 		floorMD = Model::LoadFromOBJ("floor");
+		skydomeMD = Model::LoadFromOBJ("skydome");
 	}
 	//3Dオブジェクト生成
 	{
@@ -112,6 +113,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		reticle = Object3d::Create();
 		zango = Object3d::Create();
 		floor = Object3d::Create();
+		skydome = Object3d::Create();
 		for (int i = 0; i < 5; i++) {
 			PopPos_[i] = Object3d::Create();
 		}
@@ -130,6 +132,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		reticle->SetModel(reticleMD);
 		zango->SetModel(zangoMD);
 		floor->SetModel(floorMD);
+		skydome->SetModel(skydomeMD);
 		for (int i = 0; i < 5; i++) {
 			PopPos_[i]->SetModel(reticleMD);
 		}
@@ -148,6 +151,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	{
 		homeOBJ->wtf.scale = Vector3{ 3,3,3 };
 		zango->wtf.scale = (Vector3{ 5, 3.5f, 5 });
+		skydome->wtf.scale = (Vector3{ 1000, 1000, 1000 });
 	}
 	//3Dオブジェクトを一回アップデート
 	{
@@ -164,6 +168,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		player->Update(view);
 		zango->Update(view);
 		floor->Update(view);
+		skydome->Update(view);
 		for (int i = 0; i < 5; i++) {
 			PopPos_[i]->Update(view);
 		}
@@ -323,6 +328,7 @@ void GameScene::Update() {
 	player->Update(view);
 	zango->Update(view);
 	floor->Update(view);
+	skydome->Update(view);
 	for (int i = 0; i < 5; i++) {
 		PopPos_[i]->Update(view);
 	}
@@ -353,6 +359,7 @@ void GameScene::Update() {
 		player->Update(view);
 		zango->Update(view);
 		floor->Update(view);
+		skydome->Update(view);
 		//敵ポップ
 		for (int i = 0; i < _countof(enemys); i++) {
 
@@ -692,6 +699,7 @@ void GameScene::Draw() {
 		//reticle->Draw();
 		zango->Draw();
 		floor->Draw();
+		skydome->Draw();
 		for (int i = 0; i < _countof(enemys); i++) {
 			if (enemys[i].isDead == false) {
 				enemys[i].obj3d.Draw();

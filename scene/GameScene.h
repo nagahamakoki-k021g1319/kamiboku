@@ -106,12 +106,14 @@ private: // ÉÅÉìÉoïœêî
 	Object3d* reticle = nullptr;
 	Object3d* zango = nullptr;
 	Object3d* floor = nullptr;
+	Object3d* skydome = nullptr;
 	Model* model = nullptr;
 	Model* model2 = nullptr;
 	Model* reticleMD = nullptr;
 	Model* zangoMD = nullptr;
 	Model* eneMD = nullptr;
 	Model* floorMD = nullptr;
+	Model* skydomeMD = nullptr;
 
 
 	int soundCheckFlag = 0;
