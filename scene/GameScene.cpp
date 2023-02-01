@@ -23,9 +23,18 @@ GameScene::~GameScene() {
 	delete eneMD;
 	delete floor;
 
+	//FBXオブジェクト解放
+	delete fbxObject3d_;
+	delete fbxModel_;
+
+	delete fbxObject3d_2;
+	delete fbxModel2_;
+
 	//オーディオ解放
 	audio->Finalize();
 	delete audio;
+
+	delete particleManager;
 
 }
 
@@ -43,6 +52,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	//スプライト共通部分の初期化
 	spriteCommon = new SpriteCommon;
 	spriteCommon->Initialize(dxCommon);
+	
+	// カメラ生成
+	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
+	FBXObject3d::SetCamera(camera);
+	
 	//ビューの生成
 	{
 		view = new View();
@@ -175,6 +189,33 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 	}
 
+	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
+	fbxModel2_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
+
+	// デバイスをセット
+	FBXObject3d::SetDevice(dxCommon->GetDevice());
+	// グラフィックスパイプライン生成
+	FBXObject3d::CreateGraphicsPipeline();
+
+
+	fbxObject3d_ = new FBXObject3d;
+	fbxObject3d_->Initialize();
+	fbxObject3d_->SetModel(fbxModel_);
+	fbxObject3d_->SetScale({ 0.01,0.01,0.01 });
+	fbxObject3d_->SetPosition({ 0,10,40 });
+	fbxObject3d_->PlayAnimation();
+
+	fbxObject3d_2 = new FBXObject3d;
+	fbxObject3d_2->Initialize();
+	fbxObject3d_2->SetModel(fbxModel2_);
+	fbxObject3d_2->SetScale({ 0.01,0.01,0.01 });
+	fbxObject3d_2->SetPosition({ -10,10,40 });
+	fbxObject3d_2->PlayAnimation();
+
+
+	// パーティクル生成
+	particleManager = ParticleManager::Create();
+	particleManager->Update();
 
 	audio = new Audio();
 	audio->Initialize();
@@ -338,6 +379,7 @@ void GameScene::Update() {
 
 
 	case 2: // game
+		isDireFlag = 0;
 
 		// オブジェクト移動
 		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
@@ -348,9 +390,17 @@ void GameScene::Update() {
 			// 移動後の座標を計算
 			/*if (input->PushKey(DIK_UP)) { rotate.x += 0.5f; }
 			else if (input->PushKey(DIK_DOWN)) { rotate.x -= 0.5f; }*/
-			if (input->PushKey(DIK_RIGHT)) { rotate.y += 1.0f; }
-			else if (input->PushKey(DIK_LEFT)) { rotate.y -= 1.0f; }
-
+		
+			if (input->PushKey(DIK_RIGHT)) { 
+				isDireFlag = 2;
+				rotate.y += 1.0f; 
+			}
+			if (input->PushKey(DIK_LEFT)) { 
+				isDireFlag = 1;
+				rotate.y -= 1.0f; 
+			}
+				
+			
 			// 座標の変更を反映
 
 			homeOBJ->wtf.rotation = rotate;
@@ -362,9 +412,7 @@ void GameScene::Update() {
 		skydome->Update(view);
 		//敵ポップ
 		for (int i = 0; i < _countof(enemys); i++) {
-
 			enemys[i].Update(eneMD, Affin::GetWorldTrans(homeOBJ->wtf.matWorld), view);
-
 		}
 		for (int i = 0; i < 5; i++) {
 			PopPos_[i]->Update(view);
@@ -376,6 +424,10 @@ void GameScene::Update() {
 		for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
 			Ebullet->Update(view);
 		}
+
+		fbxObject3d_->Update();
+		fbxObject3d_2->Update();
+
 
 		{
 			Reticle3D();
@@ -644,6 +696,41 @@ void GameScene::Update() {
 		}
 
 
+		// パーティクル起動(長押し)
+		if (input->TriggerKey(DIK_P)) {
+			
+			//パーティクル範囲
+			for (int i = 0; i < 50; i++) {
+				//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+				const float rnd_pos = 0.03f;
+				//const float rnd_posX = 1.0f;
+				XMFLOAT3 pos{};
+				pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+				pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+				pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+				//速度
+				//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+				const float rnd_vel = 0.5f;
+				XMFLOAT3 vel{};
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+				const float rnd_acc = -0.01f;
+				const float rnd_acc_v = -0.01f;
+				XMFLOAT3 acc{};
+				acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+				acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+				//acc.z = (float)rand() / RAND_MAX * rnd_acc;
+
+				//追加
+				particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+			}
+		}
+		particleManager->Update();
+
+
 		// リセット
 		if (input->PushKey(DIK_R)) {
 			ischackFlag = 0;
@@ -659,10 +746,7 @@ void GameScene::Update() {
 		}
 
 		break;
-
 	}
-
-
 }
 
 void GameScene::Draw() {
@@ -696,6 +780,9 @@ void GameScene::Draw() {
 		//3Dオブジェクトの描画
 		homeOBJ->Draw();
 		player->Draw();
+
+		
+
 		//reticle->Draw();
 		zango->Draw();
 		floor->Draw();
@@ -719,6 +806,18 @@ void GameScene::Draw() {
 		//3Dオブジェクト描画後処理
 		Object3d::PostDraw();
 
+		fbxObject3d_->Draw(dxCommon->GetCommandList());
+		fbxObject3d_2->Draw(dxCommon->GetCommandList());
+
+		// 3Dオブジェクト描画前処理
+		ParticleManager::PreDraw(dxCommon->GetCommandList());
+
+		// 3Dオブクジェクトの描画
+		particleManager->Draw();
+
+		// 3Dオブジェクト描画後処理
+		ParticleManager::PostDraw();
+
 		// 前景スプライト
 
 		retSP->Draw();
@@ -731,6 +830,16 @@ void GameScene::Draw() {
 void GameScene::Reticle3D() {
 	//自機から3Dレティクルへのオフセット(Z+向き)
 	Vector3 offset = { 0.0f, 0, -1.0f };
+	if (isDireFlag == 1) {
+		offset.x = 1.0f;
+	}
+	else if (isDireFlag == 2) {
+		offset.x = -1.0f;
+	}
+	else {
+		offset.x = 0.0f;
+	}
+
 	//自機のワールド行列の回転を反映
 	offset = Affin::VecMat(offset, player->wtf.matWorld);
 	//ベクトルの長さを整える
@@ -746,13 +855,10 @@ void GameScene::Reticle3D() {
 	reticle->wtf.matWorld = Affin::matTrans(reticle->wtf.position);
 
 	reticle->Update(view);
-
 }
 
 void GameScene::Attack()
 {
-
-
 	if (burstBL < 30) {
 		if (coolTime <= 0) {
 			//弾を生成し、初期化

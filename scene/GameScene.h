@@ -19,6 +19,12 @@
 #include "object/Bullet.h"
 #include "object/EnemyBullet.h"
 
+#include "DebugCamera.h"
+#include "FBX/FBXObject3d.h"
+#include "FBX/FbxLoader.h"
+
+#include "Particle/ParticleManager.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -74,6 +80,8 @@ public: // メンバ関数
 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
+	//FBXで使うカメラ(ビュープロジェクション?みたいな)
+	DebugCamera* camera = nullptr;
 	Input* input = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	Audio* audio = nullptr;
@@ -115,6 +123,11 @@ private: // メンバ変数
 	Model* floorMD = nullptr;
 	Model* skydomeMD = nullptr;
 
+	FBXModel* fbxModel_ = nullptr;
+	FBXObject3d* fbxObject3d_ = nullptr;
+
+	FBXModel* fbxModel2_ = nullptr;
+	FBXObject3d* fbxObject3d_2 = nullptr;
 
 	int soundCheckFlag = 0;
 
@@ -175,6 +188,14 @@ private: // メンバ変数
 	float addspeed = 0.0f;
 
 	int scene = 0;
+
+	//パーティクルクラスの初期化 
+	ParticleManager* particleManager = nullptr;
+	int PTtime = 0;
+	bool isPTflag = false;
+
+	//左右のオフセット変更(Z + 向き) 左がフラグ1 左がフラグ2
+	int isDireFlag = 0;
 
 
 };

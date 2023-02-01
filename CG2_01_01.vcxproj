@@ -161,6 +161,9 @@
   <ItemGroup>
     <ClCompile Include="engine\2d\Sprite.cpp" />
     <ClCompile Include="engine\2d\SpriteCommon.cpp" />
+    <ClCompile Include="engine\3d\FBX\FbxLoader.cpp" />
+    <ClCompile Include="engine\3d\FBX\FBXModel.cpp" />
+    <ClCompile Include="engine\3d\FBX\FBXObject3d.cpp" />
     <ClCompile Include="engine\3d\Model.cpp" />
     <ClCompile Include="engine\3d\Object3d.cpp" />
     <ClCompile Include="engine\3d\Particle\ParticleManager.cpp" />
@@ -231,6 +234,9 @@
   <ItemGroup>
     <ClInclude Include="engine\2d\Sprite.h" />
     <ClInclude Include="engine\2d\SpriteCommon.h" />
+    <ClInclude Include="engine\3d\FBX\FbxLoader.h" />
+    <ClInclude Include="engine\3d\FBX\FBXModel.h" />
+    <ClInclude Include="engine\3d\FBX\FBXObject3d.h" />
     <ClInclude Include="engine\3d\Model.h" />
     <ClInclude Include="engine\3d\Object3d.h" />
     <ClInclude Include="engine\3d\Particle\ParticleManager.h" />
