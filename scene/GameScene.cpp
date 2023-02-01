@@ -76,7 +76,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 		sprite1->Initialize(spriteCommon);
 		sprite1->SetPozition(position1);
-		sprite1->SetSize(XMFLOAT2{ 200.0f,112.0f });
+		sprite1->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
 		sprite2->Initialize(spriteCommon);
 		position2.x = 900.0f;
@@ -99,7 +99,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	{
 		spriteCommon->LoadTexture(0, "eri.png");
 		sprite->SetTextureIndex(0);
-		spriteCommon->LoadTexture(1, "feri.png");
+		spriteCommon->LoadTexture(1, "info.png");
 		sprite1->SetTextureIndex(1);
 		spriteCommon->LoadTexture(2, "ynkm.png");
 		sprite2->SetTextureIndex(2);
@@ -235,7 +235,7 @@ void GameScene::Update() {
 	{
 	case 0:// title
 		if (input->TriggerKey(DIK_SPACE)) {
-			scene = 2;
+			scene = 1;
 		}
 		// 自弾
 		burstBL = 0;
@@ -285,7 +285,7 @@ void GameScene::Update() {
 		// 移動完了の率（経過時間/全体時間） ：timeRate (%)
 		nowCount++;
 
-		if (input->TriggerKey(DIK_R)) {
+		if (input->TriggerKey(DIK_E)) {
 			startCount = nowCount;
 			switch (cameraState)
 			{
@@ -843,13 +843,46 @@ void GameScene::Draw() {
 		endSP->Draw();
 		break;
 	case 1:// 
+		//3Dオブジェクト描画前処理
+		Object3d::PreDraw(dxCommon->GetCommandList());
+		/// <summary>
+		/// ここに3Dオブジェクトの描画処理を追加できる
+		/// <summary>
+
+		//3Dオブジェクトの描画
+		//homeOBJ->Draw();
+		player->Draw();
+
+
+
+		//reticle->Draw();
+		zango->Draw();
+		floor->Draw();
+		skydome->Draw();
+		for (int i = 0; i < _countof(enemys); i++) {
+			if (enemys[i].isDead == false) {
+				enemys[i].obj3d.Draw();
+			}
+		}
+		for (int i = 1; i < _countof(PopPos_); i++) {
+			PopPos_[i]->Draw();
+		}
+		//弾描画
+		for (std::unique_ptr<Bullet>& bullet : bullets_) {
+			bullet->obj3d.Draw();
+		}
+		//弾描画
+		for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
+			Ebullet->obj3d.Draw();
+		}
+		//3Dオブジェクト描画後処理
+		Object3d::PostDraw();
+		sprite1->Draw();
 	case 2: // game
 
 
-		if (ischackFlag == 0) {
-			sprite1->Draw();
-		}
-		else {}
+		
+	
 
 		sprite2->Draw();
 
