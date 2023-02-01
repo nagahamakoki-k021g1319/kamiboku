@@ -265,6 +265,13 @@ void GameScene::Update() {
 		if (input->TriggerKey(DIK_SPACE)) {
 			scene = 0;
 		}
+		for (int i = 0; i < _countof(enemys); i++) {
+			enemys[i].OnColision();
+		}
+		for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
+			Ebullet->OnColision();
+		}
+
 		break;
 
 	case 1:// info()	
