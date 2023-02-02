@@ -164,7 +164,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	}
 	{
 		homeOBJ->wtf.scale = Vector3{ 3,3,3 };
-		zango->wtf.scale = (Vector3{ 5, 3.5f, 5 });
+		zango->wtf.scale = (Vector3{ 45, 3.7f, 45 });
 		skydome->wtf.scale = (Vector3{ 1000, 1000, 1000 });
 	}
 	//3Dオブジェクトを一回アップデート
@@ -302,7 +302,7 @@ void GameScene::Update() {
 				maxTime = 50.0f;
 				timeRate;
 				maxTimeRate;
-				cameraState = 2;
+				cameraState = 3;
 				break;
 			}
 		}
@@ -390,7 +390,7 @@ void GameScene::Update() {
 		isHit = 0;
 
 		// オブジェクト移動
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_A))
 		{
 			// 現在の座標を取得
 			Vector3 rotate = homeOBJ->wtf.rotation;
@@ -399,11 +399,11 @@ void GameScene::Update() {
 			/*if (input->PushKey(DIK_UP)) { rotate.x += 0.5f; }
 			else if (input->PushKey(DIK_DOWN)) { rotate.x -= 0.5f; }*/
 
-			if (input->PushKey(DIK_D)) {
+			if (input->PushKey(DIK_RIGHT)) {
 				isDireFlag = 2;
 				rotate.y += 1.0f;
 			}
-			if (input->PushKey(DIK_A)) {
+			if (input->PushKey(DIK_LEFT)) {
 				isDireFlag = 1;
 				rotate.y -= 1.0f;
 			}
@@ -646,14 +646,45 @@ void GameScene::Update() {
 			}
 			if (isHit == 1) {
 				HP--;
+
+
+				//パーティクル範囲
+				for (int i = 0; i < 50; i++) {
+					//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+					const float rnd_pos = 3.03f;
+					//const float rnd_posX = 1.0f;
+					XMFLOAT3 pos{};
+					pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+					pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+					pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+					//速度
+					//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+					const float rnd_vel = 0.5f;
+					XMFLOAT3 vel{};
+					vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+					vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+					vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+					//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+					const float rnd_acc = -0.01f;
+					const float rnd_acc_v = -0.01f;
+					XMFLOAT3 acc{};
+					acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+					acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+					//acc.z = (float)rand() / RAND_MAX * rnd_acc;
+
+					//追加
+					particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+
+				}
 			}
 			if (HP < 0) {
 				scene = 3;
-			}			
+			}
 		}
 		//当たり判定 eBullet->zango
 		{
-			if (!input->PushKey(DIK_Q)||cameraState==2||cameraState==3) {
+			if (!input->PushKey(DIK_Q) || cameraState == 2 || cameraState == 3) {
 
 
 				//判定対象aとbの座標
@@ -877,12 +908,15 @@ void GameScene::Draw() {
 		}
 		//3Dオブジェクト描画後処理
 		Object3d::PostDraw();
+
+		
 		sprite1->Draw();
+		break;
 	case 2: // game
 
 
 		
-	
+
 
 		sprite2->Draw();
 
@@ -938,9 +972,13 @@ void GameScene::Draw() {
 
 			sprite->Draw();
 		}
-		if (input->PushKey(DIK_Q) && cameraState == 0 || cameraState == 1) {
+		if (input->PushKey(DIK_Q) && cameraState == 0 ) {
 
 			retSP->Draw();
+		}
+
+		if (input->PushKey(DIK_TAB)&&cameraState==2) {
+			sprite1->Draw();
 		}
 
 		break;
