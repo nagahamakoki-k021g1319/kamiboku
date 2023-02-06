@@ -207,6 +207,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 	// パーティクル生成
 	particleManager = ParticleManager::Create();
+	particleManager->LoadTexture("2Dret.png");
 	particleManager->Update();
 
 	audio = new Audio();

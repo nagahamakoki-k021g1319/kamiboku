@@ -213,6 +213,7 @@ private:// 静的メンバ関数
 	static void UpdateViewMatrix();
 
 public: // メンバ関数
+	static void LoadTexture(const std::string& fileName);
 	bool Initialize();
 	/// <summary>
 	/// 毎フレーム処理
