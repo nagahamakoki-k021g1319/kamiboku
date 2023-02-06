@@ -41,7 +41,7 @@ public:
 	Enemy();
 	~Enemy();
 
-	void Update(Model*model_,Vector3 obj,View* view);
+	void Update(Model*model_,Vector3 obj);
 	void Draw();
 	//void Draw(ViewProjection& viewProjection_, uint32_t textureHandle_);
 	

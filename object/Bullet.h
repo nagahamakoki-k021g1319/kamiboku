@@ -16,7 +16,7 @@ public:
 	//~Bullet();
 	void Initialize(Model* model, const Vector3& position,Vector3 move);
 
-	void Update(View* view);
+	void Update();
 
 	void Draw();
 

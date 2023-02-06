@@ -18,23 +18,27 @@ Camera::Camera(int window_width, int window_height)
 
 void Camera::Update()
 {
-	if (viewDirty || projectionDirty) {
-		// 再計算必要なら
-		if (viewDirty) {
-			// ビュー行列更新
-			UpdateViewMatrix();
-			viewDirty = false;
-		}
+	UpdateViewMatrix();
+	UpdateProjectionMatrix();
+	matViewProjection = matView * matProjection;/////////////  
 
-		// 再計算必要なら
-		if (projectionDirty) {
-			// ビュー行列更新
-			UpdateProjectionMatrix();
-			projectionDirty = false;
-		}
-		// ビュープロジェクションの合成
-		matViewProjection = matView * matProjection;
-	}
+	//if (viewDirty || projectionDirty) {
+	//	// 再計算必要なら
+	//	if (viewDirty) {
+	//		// ビュー行列更新
+	//		UpdateViewMatrix();
+	//		viewDirty = false;
+	//	}
+
+	//	// 再計算必要なら
+	//	if (projectionDirty) {
+	//		// ビュー行列更新
+	//		UpdateProjectionMatrix();
+	//		projectionDirty = false;
+	//	}
+	//	// ビュープロジェクションの合成
+	//	matViewProjection = matView * matProjection;
+	//}
 }
 
 void Camera::UpdateViewMatrix()
@@ -123,9 +127,9 @@ void Camera::UpdateProjectionMatrix()
 {
 	// 透視投影による射影行列の生成
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
+		FieldOfViewY(),
 		aspectRatio,
-		0.1f, 1000.0f
+		0.1f, 100000.0f
 	);
 }
 
@@ -187,4 +191,10 @@ void Camera::MoveVector(const XMVECTOR & move)
 
 	SetEye(eye_moved);
 	SetTarget(target_moved);
+}
+
+float Camera::FieldOfViewY() {
+
+	return 2 * atan(sensor / (2 * focalLengs));
+
 }

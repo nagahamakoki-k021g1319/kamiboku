@@ -56,32 +56,24 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	// カメラ生成
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 	FBXObject3d::SetCamera(camera);
-
-	//ビューの生成
-	{
-		view = new View();
-	}
-	//ビューの初期化
-	{
-		view->Initialize();
-	}
+	Object3d::SetCamera(camera);
 
 	//スプライトの初期化
 	{
 		sprite->Initialize(spriteCommon);
-		position.x = 400.0f;
+		position.x = 0.0f;
 		position.y = 0.0f;
 		sprite->SetPozition(position);
-		sprite->SetSize(XMFLOAT2{ 500.0f,281.0f });
+		sprite->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
 		sprite1->Initialize(spriteCommon);
 		sprite1->SetPozition(position1);
 		sprite1->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
 		sprite2->Initialize(spriteCommon);
-		position2.x = 900.0f;
+		position2.x = 0.0f;
 		sprite2->SetPozition(position2);
-		sprite2->SetSize(XMFLOAT2{ 300.0f,170.0f });
+		sprite2->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
 		titleSP->Initialize(spriteCommon);
 		titleSP->SetPozition(titlePOS);
@@ -97,11 +89,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	}
 	//スプライトの画像指定
 	{
-		spriteCommon->LoadTexture(0, "eri.png");
+		spriteCommon->LoadTexture(0, "blood.png");
 		sprite->SetTextureIndex(0);
 		spriteCommon->LoadTexture(1, "info.png");
 		sprite1->SetTextureIndex(1);
-		spriteCommon->LoadTexture(2, "ynkm.png");
+		spriteCommon->LoadTexture(2, "blood2.png");
 		sprite2->SetTextureIndex(2);
 		spriteCommon->LoadTexture(3, "Title.png");
 		titleSP->SetTextureIndex(3);
@@ -169,22 +161,22 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	}
 	//3Dオブジェクトを一回アップデート
 	{
-
+		cameraState = 0;
 		if (cameraState == 0) {
 			ai = Vector3{ 0,1,45 };
-			view->focalLengs = 90;
+			camera->SetFocalLengs(90);
 
-			view->eye = { ai.x,ai.y,ai.z };
-			view->target = Vector3{ 0,1,80 };
+			camera->SetEye({ ai.x,ai.y,ai.z });
+			camera->SetTarget({ 0,1,80 });
 		}
 
-		homeOBJ->Update(view);
-		player->Update(view);
-		zango->Update(view);
-		floor->Update(view);
-		skydome->Update(view);
+		homeOBJ->Update();
+		player->Update();
+		zango->Update();
+		floor->Update();
+		skydome->Update();
 		for (int i = 0; i < 5; i++) {
-			PopPos_[i]->Update(view);
+			PopPos_[i]->Update();
 		}
 
 	}
@@ -230,6 +222,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 void GameScene::Update() {
 	srand((unsigned)time(nullptr));
 	int popRand = rand() % 4 + 1;
+	camera->Update();
 
 	switch (scene)
 	{
@@ -256,6 +249,7 @@ void GameScene::Update() {
 		popCount = 0;
 		wave = 0;
 		waitTimer = 250;
+		isMove = 0;
 
 		HP = 10;
 
@@ -285,8 +279,9 @@ void GameScene::Update() {
 		// 移動完了の率（経過時間/全体時間） ：timeRate (%)
 		nowCount++;
 
-		if (input->TriggerKey(DIK_E)) {
+		if (input->TriggerKey(DIK_E)&&isMove==0) {
 			startCount = nowCount;
+			isMove = 1;
 			switch (cameraState)
 			{
 			case 0:
@@ -315,29 +310,30 @@ void GameScene::Update() {
 		if (cameraState == 1) {
 			Vector3 A, B, C, AB, AC, FL, FLst, FLen;
 			p0 = Affin::GetWorldTrans(player->wtf.matWorld);
-			p1 = Vector3(0, 0, 0);
-			p2 = Vector3(0, 150, 0);
-			p3 = Vector3(0, 150, 1);
+			p1 = MINVec3;
+			p2 = MAXVec3;
+			p3 = Vector3(MAXVec3.x, MAXVec3.y, 1);
 			A = Vector3::lerp(p0, p1, timeRate);
 			B = Vector3::lerp(p1, p2, timeRate);
 			C = Vector3::lerp(p1, p3, timeRate);
 			AB = Vector3::lerp(A, B, timeRate);
 			AC = Vector3::lerp(A, C, timeRate - 0.1);
-			FLst = Vector3(90, 0, 0);
-			FLen = Vector3(20, 0, 1);
-			FL = Vector3::lerp(FLst, FLen, timeRate - 0.1);
-			view->focalLengs = FL.x;
+			FLst = Vector3(FLMAX, 0, 0);
+			FLen = Vector3(FLMIN, 0, 1);
+			FL = Vector3::lerp(FLst, FLen, timeRate);
+			camera->SetFocalLengs(FL.x);
 
-			view->eye = AB;
-			view->target = AC;
+			camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(AB));
+			camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(AC));
 			if (timeRate >= 1.0) {
 				cameraState = 2;
+				isMove = 0;
 			}
 		}
 		if (cameraState == 3) {
 			Vector3 A, B, C, AB, AC, FL, FLst, FLen;
-			p0 = Vector3(0, 150, 0);
-			p1 = Vector3(0, 0, 0);
+			p0 = MAXVec3;
+			p1 = MINVec3;
 			p2 = Affin::GetWorldTrans(player->wtf.matWorld);
 			p3 = Affin::GetWorldTrans(reticle->wtf.matWorld);
 			A = Vector3::lerp(p0, p1, timeRate);
@@ -345,40 +341,42 @@ void GameScene::Update() {
 			C = Vector3::lerp(p1, p3, timeRate);
 			AB = Vector3::lerp(A, B, timeRate - 0.01);
 			AC = Vector3::lerp(A, C, timeRate);
-			FLst = Vector3(20, 0, 0);
-			FLen = Vector3(90, 0, 1);
-			FL = Vector3::lerp(FLst, FLen, timeRate - 0.1);
-			view->focalLengs = FL.x;
+			FLst = Vector3(FLMIN, 0, 0);
+			FLen = Vector3(FLMAX, 0, 1);
+			FL = Vector3::lerp(FLst, FLen, timeRate);
+			camera->SetFocalLengs(FL.x);
 
-			view->eye = AB;
-			view->target = AC;
+			camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(AB));
+			camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(AC));
 			if (timeRate >= 1.0) {
 				cameraState = 0;
+				isMove = 0;
 			}
 		}
 		if (cameraState == 0) {
+			isMove = 0;
 			ai = Affin::GetWorldTrans(player->wtf.matWorld);
-			view->focalLengs = 90;
+			camera->SetFocalLengs(FLMAX);
 
-			view->eye = { ai.x,ai.y,ai.z };
-			view->target = Affin::GetWorldTrans(reticle->wtf.matWorld);
+			camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(ai));
+			camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(reticle->wtf.matWorld)));
 		}
 		else if (cameraState == 2) {
-			view->focalLengs = 20;
+			isMove = 0;
+			camera->SetFocalLengs(FLMIN);
 
-			view->eye = Vector3(0, 150, 0);
-			view->target = Affin::GetWorldTrans(player->wtf.matWorld);
-
+			camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(Vector3(0, 150, 0)));
+			camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(player->wtf.matWorld)));
 		}
 
 	}
-	homeOBJ->Update(view);
-	player->Update(view);
-	zango->Update(view);
-	floor->Update(view);
-	skydome->Update(view);
+	homeOBJ->Update();
+	player->Update();
+	zango->Update();
+	floor->Update();
+	skydome->Update();
 	for (int i = 0; i < 5; i++) {
-		PopPos_[i]->Update(view);
+		PopPos_[i]->Update();
 	}
 
 	break;
@@ -413,24 +411,24 @@ void GameScene::Update() {
 
 			homeOBJ->wtf.rotation = rotate;
 		}
-		homeOBJ->Update(view);
-		player->Update(view);
-		zango->Update(view);
-		floor->Update(view);
-		skydome->Update(view);
+		homeOBJ->Update();
+		player->Update();
+		zango->Update();
+		floor->Update();
+		skydome->Update();
 		//敵ポップ
 		for (int i = 0; i < _countof(enemys); i++) {
-			enemys[i].Update(eneMD, Affin::GetWorldTrans(player->wtf.matWorld), view);
+			enemys[i].Update(eneMD, Affin::GetWorldTrans(player->wtf.matWorld));
 		}
 		for (int i = 0; i < 5; i++) {
-			PopPos_[i]->Update(view);
+			PopPos_[i]->Update();
 		}
 		for (std::unique_ptr<Bullet>& bullet : bullets_) {
-			bullet->Update(view);
+			bullet->Update();
 		}
 		//敵更新
 		for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
-			Ebullet->Update(view);
+			Ebullet->Update();
 		}
 
 		fbxObject3d_->Update();
@@ -724,8 +722,9 @@ void GameScene::Update() {
 			// 移動完了の率（経過時間/全体時間） ：timeRate (%)
 			nowCount++;
 
-			if (input->TriggerKey(DIK_E)) {
+			if (input->TriggerKey(DIK_E) && isMove == 0) {
 				startCount = nowCount;
+				isMove = 1;
 				switch (cameraState)
 				{
 				case 0:
@@ -744,29 +743,30 @@ void GameScene::Update() {
 			if (cameraState == 1) {
 				Vector3 A, B, C, AB, AC, FL, FLst, FLen;
 				p0 = Affin::GetWorldTrans(player->wtf.matWorld);
-				p1 = Vector3(0, 0, 0);
-				p2 = Vector3(0, 150, 0);
-				p3 = Vector3(0, 150, 1);
+				p1 = MINVec3;
+				p2 = MAXVec3;
+				p3 = Vector3(MAXVec3.x, MAXVec3.y, 1);
 				A = Vector3::lerp(p0, p1, timeRate);
 				B = Vector3::lerp(p1, p2, timeRate);
 				C = Vector3::lerp(p1, p3, timeRate);
 				AB = Vector3::lerp(A, B, timeRate);
 				AC = Vector3::lerp(A, C, timeRate - 0.1);
-				FLst = Vector3(90, 0, 0);
-				FLen = Vector3(20, 0, 1);
-				FL = Vector3::lerp(FLst, FLen, timeRate - 0.1);
-				view->focalLengs = FL.x;
+				FLst = Vector3(FLMAX, 0, 0);
+				FLen = Vector3(FLMIN, 0, 1);
+				FL = Vector3::lerp(FLst, FLen, timeRate);
+				camera->SetFocalLengs(FL.x);
 
-				view->eye = AB;
-				view->target = AC;
+				camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(AB));
+				camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(AC));
 				if (timeRate >= 1.0) {
 					cameraState = 2;
+					isMove = 0;
 				}
 			}
 			if (cameraState == 3) {
 				Vector3 A, B, C, AB, AC, FL, FLst, FLen;
-				p0 = Vector3(0, 150, 0);
-				p1 = Vector3(0, 0, 0);
+				p0 = MAXVec3;
+				p1 = MINVec3;
 				p2 = Affin::GetWorldTrans(player->wtf.matWorld);
 				p3 = Affin::GetWorldTrans(reticle->wtf.matWorld);
 				A = Vector3::lerp(p0, p1, timeRate);
@@ -774,75 +774,72 @@ void GameScene::Update() {
 				C = Vector3::lerp(p1, p3, timeRate);
 				AB = Vector3::lerp(A, B, timeRate - 0.01);
 				AC = Vector3::lerp(A, C, timeRate);
-				FLst = Vector3(20, 0, 0);
-				FLen = Vector3(90, 0, 1);
-				FL = Vector3::lerp(FLst, FLen, timeRate - 0.1);
-				view->focalLengs = FL.x;
+				FLst = Vector3(FLMIN, 0, 0);
+				FLen = Vector3(FLMAX, 0, 1);
+				FL = Vector3::lerp(FLst, FLen, timeRate);
+				camera->SetFocalLengs(FL.x);
 
-				view->eye = AB;
-				view->target = AC;
+				camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(AB));
+				camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(AC));
 				if (timeRate >= 1.0) {
 					cameraState = 0;
+					isMove = 0;
 				}
 			}
-
-
-
-
 			if (cameraState == 0) {
+				isMove = 0;
 				ai = Affin::GetWorldTrans(player->wtf.matWorld);
-				view->focalLengs = 90;
+				camera->SetFocalLengs(FLMAX);
 
-				view->eye = { ai.x,ai.y,ai.z };
-				view->target = Affin::GetWorldTrans(reticle->wtf.matWorld);
+				camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(ai));
+				camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(reticle->wtf.matWorld)));
 			}
 			else if (cameraState == 2) {
-				view->focalLengs = 20;
+				isMove = 0;
+				camera->SetFocalLengs(FLMIN);
 
-				view->eye = Vector3(0, 150, 0);
-				view->target = Affin::GetWorldTrans(player->wtf.matWorld);
-
+				camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(Vector3(0, MAXVec3.y, 0)));
+				camera->SetTarget(ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(player->wtf.matWorld)));
 			}
 		}
-
-
-
 
 
 		// パーティクル起動(長押し)
-		if (input->TriggerKey(DIK_P)) {
-
-			//パーティクル範囲
-			for (int i = 0; i < 50; i++) {
-				//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-				const float rnd_pos = 0.03f;
-				//const float rnd_posX = 1.0f;
-				XMFLOAT3 pos{};
-				pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-				pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-				pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-
-				//速度
-				//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
-				const float rnd_vel = 0.5f;
-				XMFLOAT3 vel{};
-				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				//重力に見立ててYのみ[-0.001f,0]でランダムに分布
-				const float rnd_acc = -0.01f;
-				const float rnd_acc_v = -0.01f;
-				XMFLOAT3 acc{};
-				acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-				acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-				//acc.z = (float)rand() / RAND_MAX * rnd_acc;
-
-				//追加
-				particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
-			}
-		}
 		particleManager->Update();
+		{
+			//if (input->TriggerKey(DIK_P)) {
 
+			//	//パーティクル範囲
+			//	for (int i = 0; i < 50; i++) {
+			//		//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+			//		const float rnd_pos = 0.03f;
+			//		//const float rnd_posX = 1.0f;
+			//		XMFLOAT3 pos{};
+			//		pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+			//		pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+			//		pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+			//		//速度
+			//		//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+			//		const float rnd_vel = 0.5f;
+			//		XMFLOAT3 vel{};
+			//		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			//		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			//		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			//		//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+			//		const float rnd_acc = -0.01f;
+			//		const float rnd_acc_v = -0.01f;
+			//		XMFLOAT3 acc{};
+			//		acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+			//		acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+			//		//acc.z = (float)rand() / RAND_MAX * rnd_acc;
+
+			//		//追加
+			//		particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+			//	}
+			//}
+			//
+		}
 
 		// リセット
 		if (input->PushKey(DIK_R)) {
@@ -854,8 +851,14 @@ void GameScene::Update() {
 			audio->PlayWave("mm.wav");
 			soundCheckFlag = 1;
 		}
-		if (input->TriggerKey(DIK_SPACE)) {
-
+		if (input->TriggerKey(DIK_K)) {
+			HP = 10;
+		}
+		if (input->TriggerKey(DIK_J)) {
+			HP = 4;
+		}
+		if (input->TriggerKey(DIK_H)) {
+			HP = 2;
 		}
 
 		break;
@@ -909,16 +912,16 @@ void GameScene::Draw() {
 		//3Dオブジェクト描画後処理
 		Object3d::PostDraw();
 
-		
+
 		sprite1->Draw();
 		break;
 	case 2: // game
 
 
+
+
+
 		
-
-
-		sprite2->Draw();
 
 		//3Dオブジェクト描画前処理
 		Object3d::PreDraw(dxCommon->GetCommandList());
@@ -972,13 +975,23 @@ void GameScene::Draw() {
 
 			sprite->Draw();
 		}
-		if (input->PushKey(DIK_Q) && cameraState == 0 ) {
+		if (input->PushKey(DIK_Q) && cameraState == 0) {
 
 			retSP->Draw();
 		}
 
-		if (input->PushKey(DIK_TAB)&&cameraState==2) {
+		if (input->PushKey(DIK_TAB) && cameraState == 2) {
 			sprite1->Draw();
+		}
+
+		if (cameraState==0 || cameraState == 1) {
+			if (HP < 6&&HP>=3) {
+
+				sprite->Draw();
+			}else if(HP<3)
+			{
+				sprite2->Draw();
+			}
 		}
 
 		break;
@@ -1013,7 +1026,7 @@ void GameScene::Reticle3D() {
 	reticle->wtf.matWorld = Affin::matScale(reticle->wtf.scale);
 	reticle->wtf.matWorld = Affin::matTrans(reticle->wtf.position);
 
-	reticle->Update(view);
+	reticle->Update();
 }
 
 void GameScene::Attack()

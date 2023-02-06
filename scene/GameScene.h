@@ -11,9 +11,9 @@
 #include <string>
 
 #include "Matrix4.h"
+#include "ConvertXM.h"
 
 #include "Transform.h"
-#include "View.h"
 
 #include "object/Enemy.h"
 #include "object/Bullet.h"
@@ -133,8 +133,6 @@ private: // メンバ変数
 
 	GameScene* gamescene_ = nullptr;
 
-	// カメラ関係
-	View* view = nullptr;
 	// 時間計測に必要なデータ
 	long long startCount = 0;
 	long long nowCount = 0;
@@ -148,8 +146,10 @@ private: // メンバ変数
 	float maxTime = 50.0f;
 	float timeRate;
 	float maxTimeRate;
+	bool isMove;
 	int cameraState = 0;
-
+	const float FLMAX = 90, FLMIN = 20;
+	const Vector3 MAXVec3 = { 0,150,0 }, MINVec3 = { 0,0,0 };
 	Vector3 ai;
 
 	// 3Dレティクル用ワールドトランスフォーム

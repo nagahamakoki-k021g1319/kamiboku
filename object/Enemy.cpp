@@ -26,7 +26,7 @@ void Enemy::CalcVec(Vector3 obj) {
 	enemyFront.nomalize();
 }
 
-void Enemy::Update(Model* model_, Vector3 obj,View* view) {
+void Enemy::Update(Model* model_, Vector3 obj) {
 	assert(model_);
 
 	//ベクトル計算
@@ -85,7 +85,7 @@ void Enemy::Update(Model* model_, Vector3 obj,View* view) {
 	}
 
 	//結果を反映
-	obj3d.Update(view);
+	obj3d.Update();
 }
 
 void Enemy::Pop(Vector3 WorTrans, int seed, Model* model) {

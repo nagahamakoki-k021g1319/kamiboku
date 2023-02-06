@@ -142,9 +142,6 @@
     <ClCompile Include="engine\3d\Transform.cpp">
       <Filter>engin\ソース ファイル\3d</Filter>
     </ClCompile>
-    <ClCompile Include="engine\3d\View.cpp">
-      <Filter>engin\ソース ファイル\3d</Filter>
-    </ClCompile>
     <ClCompile Include="object\Player.cpp">
       <Filter>user\ソース</Filter>
     </ClCompile>
@@ -272,9 +269,6 @@
       <Filter>user\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Transform.h">
-      <Filter>engin\ヘッダー ファイル\3d</Filter>
-    </ClInclude>
-    <ClInclude Include="engine\3d\View.h">
       <Filter>engin\ヘッダー ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="object\Player.h">

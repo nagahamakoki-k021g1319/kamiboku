@@ -16,7 +16,7 @@ public:
 
 	void Initialize(Model* model, const Vector3& position,Vector3 vector);
 
-	void Update(View* view);
+	void Update();
 
 	void Draw();
 

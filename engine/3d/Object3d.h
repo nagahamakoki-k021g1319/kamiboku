@@ -14,7 +14,7 @@
 #include "Affin.h"
 
 #include "Transform.h"
-#include "View.h"
+#include "DebugCamera.h"
 
 //// 定数バッファ用データ構造体
 //struct ViewState
@@ -124,7 +124,6 @@ public: // 静的メンバ関数
 
 	static void SetTarget(XMFLOAT3 target);*/
 
-	static float FieldOfViewY(float focalLengs, float sensor);
 	
 
 private: // 静的メンバ変数
@@ -192,7 +191,7 @@ public: // メンバ関数
 	/// </summary>
 	void Update();
 
-	void Update(View* view);
+	//void Update(View* view);
 
 	/// <summary>
 	/// 描画
@@ -202,6 +201,7 @@ public: // メンバ関数
 	Object3d* GetParent() const { return parent; }
 
 	void SetParent(Object3d* parent) { this->parent = parent; }
+	static void SetCamera(Camera* camera) { Object3d::camera = camera; }
 
 	//setter
 	void SetModel(Model* model) { this->model = model; }
@@ -225,10 +225,10 @@ private: // メンバ変数
 	Object3d* parent = nullptr;
 	//モデル
 	Model* model = nullptr;
+	static Camera* camera;
 
 	static float win_wi, win_hi;
 public:
 	Transform wtf;
-	static float focalLengs;
 
 };

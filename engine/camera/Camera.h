@@ -123,6 +123,22 @@ public: // メンバ関数
 		this->up = up; viewDirty = true;
 	}
 
+	// sensor
+	inline const float& GetSensor() {
+		return sensor;
+	}
+	inline void SetSensor(float sensor) {
+		this->sensor = sensor; viewDirty = true;
+	}
+	// FL
+	inline const float& GetForcalLengs() {
+		return focalLengs;
+	}
+	inline void SetFocalLengs(float focalLengs) {
+		this->focalLengs = focalLengs; viewDirty = true;
+	}
+
+
 	/// <summary>
 	/// ベクトルによる視点移動
 	/// </summary>
@@ -136,6 +152,8 @@ public: // メンバ関数
 	/// <param name="move">移動量</param>
 	void MoveVector(const XMFLOAT3& move);
 	void MoveVector(const XMVECTOR& move);
+
+	float FieldOfViewY();
 
 protected: // メンバ変数
 	// ビュー行列
@@ -160,5 +178,8 @@ protected: // メンバ変数
 	XMFLOAT3 up = {0, 1, 0};
 	// アスペクト比
 	float aspectRatio = 1.0f;
+
+	float focalLengs = 50 ;
+	float sensor = 35;
 };
 

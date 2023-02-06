@@ -18,12 +18,12 @@ void Bullet::Initialize(Model* model, const Vector3& position,Vector3 move)
 	obj3d.wtf.position = position;
 }
 
-void Bullet::Update(View* view)
+void Bullet::Update()
 {
 
 	obj3d.wtf.position += (movector*1.5f);
 	//çsóÒÇÃçƒåvéZ
-	obj3d.Update(view);
+	obj3d.Update();
 }
 
 void Bullet::Draw()

@@ -21,7 +21,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, Vector3 vect
 	obj3d.wtf.matWorld *= Affin::matWorld(obj3d.wtf.position, obj3d.wtf.rotation, obj3d.wtf.scale);
 }
 
-void EnemyBullet::Update(View* view)
+void EnemyBullet::Update()
 {
 	bulletSpe = eneVec;
 	if (isDead==false) {
@@ -31,7 +31,7 @@ void EnemyBullet::Update(View* view)
 
 			obj3d.wtf.matWorld = Affin::matWorld(obj3d.wtf.position, obj3d.wtf.rotation, obj3d.wtf.scale);
 			//çsóÒÇÃçƒåvéZ
-			obj3d.Update(view);
+			obj3d.Update();
 
 			deadCount--;
 

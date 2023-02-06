@@ -302,17 +302,17 @@ void ParticleManager::InitializeGraphicsPipeline()
 	//blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	//blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 
-	//加算
-	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
-	blenddesc.SrcBlend = D3D12_BLEND_ONE;
-	blenddesc.DestBlend = D3D12_BLEND_ONE;
-
-	////減算
-	//blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+	////加算
+	//blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
 	//blenddesc.SrcBlend = D3D12_BLEND_ONE;
 	//blenddesc.DestBlend = D3D12_BLEND_ONE;
 
-	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	//減算
+	blenddesc.BlendOp = D3D12_BLEND_OP_REV_SUBTRACT;
+	blenddesc.SrcBlend = D3D12_BLEND_ONE;
+	blenddesc.DestBlend = D3D12_BLEND_ONE;
+
+	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_SUBTRACT;
 	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
 	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
