@@ -102,6 +102,7 @@ void Enemy::Pop(Vector3 WorTrans, int seed, Model* model) {
 	if (isDead == true) {
 		isDead = false;
 		seed_ = seed;
+		coolTime = 100;
 
 		//—”¶¬‘•’u
 		std::random_device seed_gen;
@@ -129,6 +130,7 @@ void Enemy::Hit() {
 
 void Enemy::OnColision() {
 	isDead = true;
+	obj3d.wtf.position.y = 100;
 }
 
 void Enemy::Attack(Model* model_)

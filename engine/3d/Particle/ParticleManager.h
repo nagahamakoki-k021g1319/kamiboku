@@ -7,6 +7,8 @@
 #include <d3dx12.h>
 #include <forward_list>
 
+#include "DebugCamera.h"
+
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
@@ -234,9 +236,11 @@ public: // メンバ関数
 	///	<param name="accel">加速度</param>
 	void Add(int life, XMFLOAT3 position, XMFLOAT3 velociy, XMFLOAT3 accel, float start_scale, float end_scale);
 
+	static void SetCamera(Camera* camera) {ParticleManager::camera = camera; }
+
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
-
+	static Camera* camera;
 	// ローカルスケール
 	XMFLOAT3 scale = { 1,1,1 };
 

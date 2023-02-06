@@ -2,6 +2,8 @@
 #include <d3dcompiler.h>
 #include <DirectXTex.h>
 
+#include "ConvertXM.h"
+
 #pragma comment(lib, "d3dcompiler.lib")
 
 using namespace DirectX;
@@ -31,6 +33,8 @@ D3D12_VERTEX_BUFFER_VIEW ParticleManager::vbView{};
 ParticleManager::VertexPos ParticleManager::vertices[vertexCount];
 XMMATRIX ParticleManager::matBillboard = XMMatrixIdentity();
 XMMATRIX ParticleManager::matBillboardY = XMMatrixIdentity();
+
+Camera* ParticleManager::camera = nullptr;
 
 //XMFLOAT3同士の加算処理
 const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) {
@@ -744,8 +748,8 @@ void ParticleManager::Update()
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matView * matProjection;
-	constMap->matBillboard = matBillboard;	// 行列の合成
+	constMap->mat = (camera->GetViewProjectionMatrix());
+	constMap->matBillboard = (camera->GetBillboardMatrix());	// 行列の合成
 	constBuff->Unmap(0, nullptr);
 }
 

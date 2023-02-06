@@ -57,6 +57,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 	FBXObject3d::SetCamera(camera);
 	Object3d::SetCamera(camera);
+	ParticleManager::SetCamera(camera);
 
 	//スプライトの初期化
 	{
@@ -207,7 +208,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 	// パーティクル生成
 	particleManager = ParticleManager::Create();
-	particleManager->LoadTexture("2Dret.png");
+	particleManager->LoadTexture("effd.png");
 	particleManager->Update();
 
 	audio = new Audio();
@@ -481,7 +482,7 @@ void GameScene::Update() {
 							}
 						}
 						popCount--;
-						popTime = 150;
+						popTime = 100;
 					}
 					else {
 						popTime--;
@@ -503,18 +504,18 @@ void GameScene::Update() {
 					if (wave < 3) {
 						wave++;
 						if (wave == 3) {
-							popCount = 30;
+							popCount = 40;
 						}
 						else if (wave == 2) {
-							popCount = 20;
+							popCount = 30;
 						}
 						else if (wave == 1) {
-							popCount = 10;
+							popCount = 20;
 						}
-						waitTimer = 250;
+						waitTimer = 100;
 					}
 					else if (wave == 3) {
-						//scene = 2;
+						scene = 3;
 					}
 				}
 			}
@@ -605,6 +606,36 @@ void GameScene::Update() {
 					if (distance <= matA.m[0][0] + matB.m[0][0]) {	//スケールxを半径として使用
 						enemys[i].OnColision();
 						bullet->OnColision();
+
+						//パーティクル範囲
+						for (int i = 0; i < 50; i++) {
+							//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+							const float rnd_pos = 3.03f;
+							//const float rnd_posX = 1.0f;
+							XMFLOAT3 pos = ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(enemys[i].obj3d.wtf.matWorld));
+							pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+							pos.y = -10;
+							pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+
+							//速度
+							//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+							const float rnd_vel = 0.5f;
+							XMFLOAT3 vel{};
+							vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+							vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+							vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+							//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+							const float rnd_acc = -0.01f;
+							const float rnd_acc_v = -0.01f;
+							XMFLOAT3 acc{};
+							acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+							acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+							//acc.z = (float)rand() / RAND_MAX * rnd_acc;
+
+							//追加
+							particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+
+						}
 					}
 
 				}
@@ -646,36 +677,6 @@ void GameScene::Update() {
 			if (isHit == 1) {
 				HP--;
 
-
-				//パーティクル範囲
-				for (int i = 0; i < 50; i++) {
-					//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-					const float rnd_pos = 3.03f;
-					//const float rnd_posX = 1.0f;
-					XMFLOAT3 pos{};
-					pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-					pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-					pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-
-					//速度
-					//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
-					const float rnd_vel = 0.5f;
-					XMFLOAT3 vel{};
-					vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-					vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-					vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-					//重力に見立ててYのみ[-0.001f,0]でランダムに分布
-					const float rnd_acc = -0.01f;
-					const float rnd_acc_v = -0.01f;
-					XMFLOAT3 acc{};
-					acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-					acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-					//acc.z = (float)rand() / RAND_MAX * rnd_acc;
-
-					//追加
-					particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
-
-				}
 			}
 			if (HP < 0) {
 				scene = 3;
