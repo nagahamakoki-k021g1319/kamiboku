@@ -210,21 +210,21 @@ void FBXObject3d::Initialize()
 
 void FBXObject3d::Update()
 {
-	XMMATRIX matScale, matRot, matTrans;
+	Matrix4 matScale, matRot, matTrans;
 
 	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+	matScale = Affin::matScale(wtf.scale);
+	matRot = Affin::matUnit();
+	matRot *= Affin::matRotateZ(wtf.rotation.z);
+	matRot *= Affin::matRotateX(wtf.rotation.x);
+	matRot *= Affin::matRotateY(wtf.rotation.y);
+	matTrans = Affin::matTrans(wtf.position);
 
 	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
+	wtf.matWorld = Affin::matUnit(); // 変形をリセット
+	wtf.matWorld *= matScale; // ワールド行列にスケーリングを反映
+	wtf.matWorld *= matRot; // ワールド行列に回転を反映
+	wtf.matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 	// ビュープロジェクション行列
 	const XMMATRIX& matViewProjection = camera->GetViewProjectionMatrix();
@@ -239,7 +239,7 @@ void FBXObject3d::Update()
 	result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
 	if (SUCCEEDED(result)) {
 		constMap->viewproj = matViewProjection;
-		constMap->world = modelTransform * matWorld;
+		constMap->world = modelTransform * ConvertXM::ConvertMat4toXMMAT(wtf.matWorld);
 		constMap->cameraPos = cameraPos;
 		constBuffTransform->Unmap(0, nullptr);
 	}

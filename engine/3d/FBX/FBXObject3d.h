@@ -10,6 +10,10 @@
 #include <string>
 #include "FbxLoader.h"
 
+#include "Transform.h"
+#include "Affin.h"
+#include "ConvertXM.h"
+
 
 class FBXObject3d
 {
@@ -18,9 +22,9 @@ protected: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMFLOAT3 = DirectX::XMFLOAT3;
+	/*using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
-	using XMMATRIX = DirectX::XMMATRIX;
+	using XMMATRIX = DirectX::XMMATRIX;*/
 
 public: // サブクラス
 // 定数バッファ用データ構造体（座標変換行列用）
@@ -86,13 +90,13 @@ public: // メンバ関数
 	/// デカさの設定
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
+	void SetScale(const Vector3& scale) { this->wtf.scale = scale; }
 
 	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(const XMFLOAT3& position) { this->position = position; }
+	void SetPosition(const Vector3& position) { this->wtf.position = position; }
 
 
 	void SetModel(FBXModel* fbxmodel) { this->fbxmodel = fbxmodel; }
@@ -102,19 +106,21 @@ public: // メンバ関数
 	/// </summary>
 	void PlayAnimation();
 
+	Transform wtf;
+	
 protected: // メンバ変数
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffTransform;
 	// 定数バッファ(スキン)
 	ComPtr<ID3D12Resource> constBuffSkin;
-	// ローカルスケール
-	XMFLOAT3 scale = { 1,1,1 };
-	// X,Y,Z軸回りのローカル回転角
-	XMFLOAT3 rotation = { 0,0,0 };
-	// ローカル座標
-	XMFLOAT3 position = { 0,0,0 };
-	// ローカルワールド変換行列
-	XMMATRIX matWorld;
+	//// ローカルスケール
+	//XMFLOAT3 scale = { 1,1,1 };
+	//// X,Y,Z軸回りのローカル回転角
+	//XMFLOAT3 rotation = { 0,0,0 };
+	//// ローカル座標
+	//XMFLOAT3 position = { 0,0,0 };
+	//// ローカルワールド変換行列
+	//XMMATRIX matWorld;
 	// モデル
 	FBXModel* fbxmodel = nullptr;
 
