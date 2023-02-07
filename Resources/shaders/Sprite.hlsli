@@ -1,10 +1,20 @@
-cbuffer cbuff0 : register(b0) {
-	float4 color; // è‰²(RGBA)
-	matrix mat;   // ï¼“ï¼¤å¤‰æ›è¡Œåˆ—
+//ƒ}ƒeƒŠƒAƒ‹
+cbuffer ConstBufferDataMaterial : register(b0)
+{
+	float4 color; // F(RGBA)
 };
 
-// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‹ã‚‰ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ã®ã‚„ã‚Šå–ã‚Šã«ä½¿ç”¨ã™ã‚‹æ§‹é€ ä½“
+//’¸“_ƒVƒF[ƒ_[‚Ìo—Í\‘¢‘Ì
+//(’¸“_ƒVƒF[ƒ_[‚©‚çƒsƒNƒZƒ‹ƒVƒF[ƒ_[‚Ö‚Ì‚â‚èæ‚è‚Ég—p‚·‚é)
 struct VSOutput {
-	float4 svpos : SV_POSITION; // ã‚·ã‚¹ãƒ†ãƒ ç”¨é ‚ç‚¹åº§æ¨™
-	float2 uv : TEXCOORD;       // uvå€¤
+	//ƒVƒXƒeƒ€—p’¸“_À•W
+	float4 svpos : SV_POSITION;
+	//UV’l
+	float2 uv : TEXCOORD;
 };
+
+//3D•ÏŠ·s—ñ
+cbuffer ConstBufferDataTransform:register(b1)
+{
+	matrix mat;
+}

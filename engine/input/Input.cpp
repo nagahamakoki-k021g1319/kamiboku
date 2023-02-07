@@ -67,3 +67,20 @@ bool Input::TriggerKey(BYTE keyNumber)
 
 	return false;
 }
+
+/// <summary>
+	/// キーのトリガーをチェック
+	/// </summary>
+	/// </param name="keyNumber">キー番号( DIK_0 等)</param>
+	/// <reutrns>離されたか</params>
+bool Input::ReleaseKey(BYTE keyNumber) {
+	if (keyPre[keyNumber])
+	{
+		if (key[keyNumber]) {
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}

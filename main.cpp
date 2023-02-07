@@ -4,6 +4,8 @@
 #include "DirectXCommon.h"
 #include "GameScene.h"
 
+
+
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #pragma region WindowsAPI初期化処理
@@ -38,7 +40,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region DirectX初期化処理
 	// 3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
-
+	//パーティクル静的初期化
+	ParticleManager::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
+	// FBX関連静的初期化
+	FbxLoader::GetInstance()->Initialize(dxCommon->GetDevice());
 
 #pragma endregion
 
@@ -54,7 +59,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// ゲームシーンの初期化
 	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon, input);
+	gameScene->Initialize(dxCommon, input,gameScene);
 
 	//FPS変えたいとき
 	fps->SetFrameRate(60);
@@ -65,7 +70,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma region ウィンドウメッセージ処理
 	
 		//アプリケーションが終わる時にmessageがWM_QUITになる
-		if (msg.message == WM_QUIT) {
+		if (winApp->ProcessMessage()) {
 			break;
 		}
 		if (input->PushKey(DIK_ESCAPE)) {

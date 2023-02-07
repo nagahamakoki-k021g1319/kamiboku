@@ -33,6 +33,13 @@ public: // メンバ関数
 	/// <reutrns>トリガーか</params>
 	bool TriggerKey(BYTE keyNumber);
 
+	/// <summary>
+	/// キーのトリガーをチェック
+	/// </summary>
+	/// </param name="keyNumber">キー番号( DIK_0 等)</param>
+	/// <reutrns>離されたか</params>
+	bool ReleaseKey(BYTE keyNumber);
+
 private: // メンバ変数
 	// キーボードのデバイス
 	ComPtr<IDirectInputDevice8> keyboard;

@@ -22,11 +22,21 @@ ID3D12Device* Object3d::device = nullptr;
 ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
+//Matr55ix4 Object3d::matView = Affin::matUnit();
+//Matrix4 Object3d::matProjection = Affin::matUnit();
+//Matrix4 Object3d::viewMatrixInv = Affin::matUnit();
+//Matrix4 Object3d::viewProjectionMatrix = Affin::matUnit();
+//Vector3 Object3d::eye = { 0, 0, -50.0f };
+//Vector3 Object3d::target = { 0, 0, 0 };
+//Vector3 Object3d::up = { 0, 1, 0 };
+//float Object3d::focalLengs = 10.0f;
+
 XMMATRIX Object3d::matView{};
 XMMATRIX Object3d::matProjection{};
 XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };
 XMFLOAT3 Object3d::target = { 0, 0, 0 };
 XMFLOAT3 Object3d::up = { 0, 1, 0 };
+float Object3d::focalLengs = 90.0f;
 
 
 
@@ -96,37 +106,37 @@ Object3d* Object3d::Create()
 	return homeOBJ;
 }
 
-void Object3d::SetEye(XMFLOAT3 eye)
-{
-	Object3d::eye = eye;
-
-	UpdateViewMatrix();
-}
-
-void Object3d::SetTarget(XMFLOAT3 target)
-{
-	Object3d::target = target;
-
-	UpdateViewMatrix();
-}
-
-void Object3d::CameraMoveVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-	XMFLOAT3 target_moved = GetTarget();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	target_moved.x += move.x;
-	target_moved.y += move.y;
-	target_moved.z += move.z;
-
-	SetEye(eye_moved);
-	SetTarget(target_moved);
-}
-
+//void Object3d::SetEye(Vector3 eye)
+//{
+//	Object3d::eye = eye;
+//
+//	UpdateViewMatrix();
+//}
+//
+//void Object3d::SetTarget(Vector3 target)
+//{
+//	Object3d::target = target;
+//
+//	UpdateViewMatrix();
+//}
+//
+//void Object3d::CameraMoveVector(Vector3 move)
+//{
+//	Vector3 eye_moved = GetEye();
+//	Vector3 target_moved = GetTarget();
+//
+//	eye_moved.x += move.x;
+//	eye_moved.y += move.y;
+//	eye_moved.z += move.z;
+//
+//	target_moved.x += move.x;
+//	target_moved.y += move.y;
+//	target_moved.z += move.z;
+//
+//	SetEye(eye_moved);
+//	SetTarget(target_moved);
+//}
+//
 
 
 void Object3d::InitializeCamera(int window_width, int window_height)
@@ -137,17 +147,29 @@ void Object3d::InitializeCamera(int window_width, int window_height)
 		XMLoadFloat3(&target),
 		XMLoadFloat3(&up));
 
+	
+
 	// 平行投影による射影行列の生成
 	//constMap->mat = XMMatrixOrthographicOffCenterLH(
 	//	0, window_width,
 	//	window_height, 0,
 	//	0, 1);
 	// 透視投影による射影行列の生成
+
+	
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
+		FieldOfViewY(focalLengs,35),
 		(float)window_width / window_height,
 		0.1f, 1000.0f
 	);
+	
+
+	/*MakeLookL(eye, target, up, matView);
+	MakePerspectiveL(focalLengs,
+		(float)window_width / window_height
+		, 0.1f, 1000.0f,
+		matProjection);*/
+
 }
 
 void Object3d::InitializeGraphicsPipeline()
@@ -304,7 +326,32 @@ void Object3d::InitializeGraphicsPipeline()
 void Object3d::UpdateViewMatrix()
 {
 	// ビュー行列の更新
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+	
+	//matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+	
+	// ビュー行列の生成
+	matView = XMMatrixLookAtLH(
+		XMLoadFloat3(&eye),
+		XMLoadFloat3(&target),
+		XMLoadFloat3(&up));
+
+	matProjection = XMMatrixPerspectiveFovLH(
+		FieldOfViewY(focalLengs, 35),
+		(float) 1280 / 720,
+		0.1f, 1000.0f
+	);
+	
+	//MakePerspectiveL(focalLengs,
+	//	(float)1280 / 720
+	//	, 0.1f, 1000.0f,
+	//	matProjection);
+	////ビュー行列の算出
+	//MakeLookL(eye, target, up, matView);
+	////ビュープロジェクション行列の作成
+	//viewProjectionMatrix = matView * matProjection;
+	////ビュー行列の逆行列を計算
+	//viewMatrixInv = MakeInverse(&matView);
+
 }
 
 bool Object3d::Initialize()
@@ -336,38 +383,86 @@ bool Object3d::Initialize()
 	return true;
 }
 
-void Object3d::Update()
+
+	void Object3d::Update()
+	{
+
+		HRESULT result;
+		Matrix4 matScale, matRot, matTrans, resultMat;
+		resultMat = Affin::matUnit();
+
+		// スケール、回転、平行移動行列の計算
+		matScale = Affin::matScale(wtf.scale.x, wtf.scale.y, wtf.scale.z);
+		matRot = Affin::matUnit();
+		matRot *= Affin::matRotation(wtf.rotation);
+		matTrans = Affin::matTrans(wtf.position.x, wtf.position.y, wtf.position.z);
+
+		// ワールド行列の合成
+		wtf.matWorld = Affin::matUnit(); // 変形をリセット
+		wtf.matWorld *= matScale; // ワールド行列にスケーリングを反映
+		wtf.matWorld *= matRot; // ワールド行列に回転を反映
+		wtf.matWorld *= matTrans; // ワールド行列に平行移動を反映
+
+		// 親オブジェクトがあれば
+		if (parent != nullptr) {
+			// 親オブジェクトのワールド行列を掛ける
+			wtf.matWorld *= parent->wtf.matWorld;
+		}
+
+		// 定数バッファへデータ転送
+
+		UpdateViewMatrix();
+		ConstBufferDataB0* constMap = nullptr;
+		result = constBuffB0->Map(0, nullptr, (void**)&constMap);
+		resultMat = wtf.matWorld * ConvertXM::ConvertXMMATtoMat4(matView * matProjection);	// 行列の合成
+
+		constMap->mat = ConvertXM::ConvertMat4toXMMAT(resultMat);
+		constBuffB0->Unmap(0, nullptr);
+
+	}
+
+
+void Object3d::Update(View* view)
 {
+	
+	assert(view);
+	eye = ConvertXM::ConvertVec3toXMFlo3(view->eye);
+	target = ConvertXM::ConvertVec3toXMFlo3(view->target);
+	up = ConvertXM::ConvertVec3toXMFlo3(view->up);
+	focalLengs = view->focalLengs;
+
+
 	HRESULT result;
-	XMMATRIX matScale, matRot, matTrans;
+	Matrix4 matScale, matRot, matTrans, resultMat;
+	resultMat = Affin::matUnit();
 
 	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+	matScale = Affin::matScale(wtf.scale.x, wtf.scale.y, wtf.scale.z);
+	matRot = Affin::matUnit();
+	matRot *= Affin::matRotation(wtf.rotation);
+	matTrans = Affin::matTrans(wtf.position.x, wtf.position.y, wtf.position.z);
 
 	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
+	wtf.matWorld = Affin::matUnit(); // 変形をリセット
+	wtf.matWorld *= matScale; // ワールド行列にスケーリングを反映
+	wtf.matWorld *= matRot; // ワールド行列に回転を反映
+	wtf.matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 	// 親オブジェクトがあれば
 	if (parent != nullptr) {
 		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
+		wtf.matWorld *= parent->wtf.matWorld;
 	}
 
 	// 定数バッファへデータ転送
+
+	UpdateViewMatrix();
 	ConstBufferDataB0* constMap = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matWorld * matView * matProjection;	// 行列の合成
-	constBuffB0->Unmap(0, nullptr);
+	resultMat = wtf.matWorld * ConvertXM::ConvertXMMATtoMat4(matView * matProjection);	// 行列の合成
 
-	
+	constMap->mat = ConvertXM::ConvertMat4toXMMAT(resultMat);
+	constBuffB0->Unmap(0, nullptr);
 
 }
 
@@ -385,4 +480,161 @@ void Object3d::Draw()
 	
 	//モデルを描画
 	model->Draw(cmdList, 1);
+}
+
+void Object3d::MakePerspectiveL(float fovAngleY, float aspect, float near_, float far_, Matrix4& matrix)
+{
+
+	float sinFov = 0.0f;
+	float cosFov = 0.0f;
+	Affin::SinCos(sinFov, cosFov, 0.5f * fovAngleY);
+
+	float range = far_ / (far_ - near_);
+	float height = cosFov / sinFov;
+
+	matrix.m[0][0] = height / aspect;
+
+	matrix.m[1][1] = cosFov / sinFov;
+
+	matrix.m[2][2] = range;
+	matrix.m[2][3] = 1.0f;
+
+	matrix.m[3][2] = -range * near_;
+
+	matrix.m[0][1] = matrix.m[0][2] = matrix.m[0][3] =
+		matrix.m[1][0] = matrix.m[1][2] = matrix.m[1][3] =
+		matrix.m[2][0] = matrix.m[2][1] =
+		matrix.m[3][0] = matrix.m[3][1] = matrix.m[3][3] = 0.0f;
+}
+void Object3d::MakeLookL(const Vector3& eye, const Vector3& target, const Vector3& up, Matrix4& mat)
+{
+	Vector3 zVec = target - eye;
+	zVec.nomalize();
+
+	Vector3 xVec = up.cross(zVec);
+	xVec.nomalize();
+
+	Vector3 yVec = zVec.cross(xVec);
+	yVec.nomalize();
+
+	mat.m[0][0] = xVec.x;
+	mat.m[0][1] = xVec.y;
+	mat.m[0][2] = xVec.z;
+	mat.m[1][0] = yVec.x;
+	mat.m[1][1] = yVec.y;
+	mat.m[1][2] = yVec.z;
+	mat.m[2][0] = zVec.x;
+	mat.m[2][1] = zVec.y;
+	mat.m[2][2] = zVec.z;
+	mat.m[3][0] = eye.x;
+	mat.m[3][1] = eye.y;
+	mat.m[3][2] = eye.z;
+}
+
+Matrix4 Object3d::MakeInverse(const Matrix4* mat)
+{
+	assert(mat);
+
+	//掃き出し法を行う行列
+	float sweep[4][8]{};
+	//定数倍用
+	float constTimes = 0.0f;
+	//許容する誤差
+	float MAX_ERR = 1e-10f;
+	//戻り値用
+	Matrix4 retMat;
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			//weepの左側に逆行列を求める行列をセット
+			sweep[i][j] = mat->m[i][j];
+
+			//sweepの右側に単位行列をセット
+			sweep[i][4 + j] = Matrix4::MakeIdentity().m[i][j];
+		}
+	}
+
+	//全ての列の対角成分に対する繰り返し
+	for (int i = 0; i < 4; i++)
+	{
+		//最大の絶対値を注目対角成分の絶対値と仮定
+		float max = std::fabs(sweep[i][i]);
+		int maxIndex = i;
+
+		//i列目が最大の絶対値となる行を探す
+		for (int j = i + 1; j < 4; j++)
+		{
+			if (std::fabs(sweep[j][i]) > max)
+			{
+				max = std::fabs(sweep[j][i]);
+				maxIndex = j;
+			}
+		}
+
+		if (fabs(sweep[maxIndex][i]) <= MAX_ERR)
+		{
+			//逆行列は求められない
+			return Matrix4::MakeIdentity();
+		}
+
+		//操作(1):i行目とmaxIndex行目を入れ替える
+		if (i != maxIndex)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				float tmp = sweep[maxIndex][j];
+				sweep[maxIndex][j] = sweep[i][j];
+				sweep[i][j] = tmp;
+			}
+		}
+
+		//sweep[i][i]に掛けると1になる値を求める
+		constTimes = 1 / sweep[i][i];
+
+		//操作(2):p行目をa倍する
+		for (int j = 0; j < 8; j++)
+		{
+			//これによりsweep[i][i]が1になる
+			sweep[i][j] *= constTimes;
+		}
+
+		//操作(3)によりi行目以外の行のi列目を0にする
+		for (int j = 0; j < 4; j++)
+		{
+			if (j == i)
+			{
+				//i行目はそのまま
+				continue;
+			}
+
+			//i行目に掛ける値を求める
+			constTimes = -sweep[j][i];
+
+			for (int k = 0; k < 8; k++)
+			{
+				//j行目にi行目をa倍した行を足す
+				//これによりsweep[j][i]が0になる
+				sweep[j][k] += sweep[i][k] * constTimes;
+			}
+		}
+	}
+
+	//sweepの右半分がmatの逆行列
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			retMat.m[i][j] = sweep[i][4 + j];
+		}
+	}
+
+	return retMat;
+}
+
+float Object3d::FieldOfViewY(float focalLengs, float sensor) {
+
+	return 2 * atan(sensor / (2 * focalLengs));
+
 }

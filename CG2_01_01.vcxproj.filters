@@ -58,12 +58,36 @@
     <Filter Include="engin\ソース ファイル\input">
       <UniqueIdentifier>{81b27b69-97e3-4554-a2ed-754762fb16ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engin\ソース ファイル\math">
+      <UniqueIdentifier>{df38d8b7-cc6c-470d-8df6-fed50e7bed7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\math">
+      <UniqueIdentifier>{1cc7e2c1-9de4-42ff-8a33-81e935e9bc0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\3d\FBX">
+      <UniqueIdentifier>{d86d6065-574d-4ce9-94ac-7667f0c5ea26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\3d\Particle">
+      <UniqueIdentifier>{d92e1117-948b-4bd6-b616-fb4bb9f47a07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\3d\FBX">
+      <UniqueIdentifier>{5ba49c7c-8ed3-43a1-b56f-e09b49986d08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\3d\Particle">
+      <UniqueIdentifier>{7b2f7a91-a145-4496-9090-5c0d2483cd2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ヘッダー ファイル\camera">
+      <UniqueIdentifier>{b26ea825-1be6-4e16-bc4a-13d1d1acb551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engin\ソース ファイル\camera">
+      <UniqueIdentifier>{3f664b78-85d2-4d60-be7e-3abf3ae293e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="user\scene">
+      <UniqueIdentifier>{067697a5-744f-43db-93a8-a2ea6394db39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="GameScene.cpp">
-      <Filter>user\ソース</Filter>
-    </ClCompile>
     <ClCompile Include="engine\input\Input.cpp">
       <Filter>engin\ソース ファイル\input</Filter>
     </ClCompile>
@@ -91,42 +115,114 @@
     <ClCompile Include="engine\3d\Object3d.cpp">
       <Filter>engin\ソース ファイル\3d</Filter>
     </ClCompile>
+    <ClCompile Include="engine\math\Affin.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\ConvertXM.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Matrix4.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector2.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\math\Vector3.cpp">
+      <Filter>engin\ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="object\Bullet.cpp">
+      <Filter>user\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="object\Enemy.cpp">
+      <Filter>user\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="object\EnemyBullet.cpp">
+      <Filter>user\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Transform.cpp">
+      <Filter>engin\ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\View.cpp">
+      <Filter>engin\ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="object\Player.cpp">
+      <Filter>user\ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\Particle\ParticleManager.cpp">
+      <Filter>engin\ソース ファイル\3d\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\camera\DebugCamera.cpp">
+      <Filter>engin\ソース ファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\GameScene.cpp">
+      <Filter>user\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\camera\Camera.cpp">
+      <Filter>engin\ソース ファイル\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\FBX\FbxLoader.cpp">
+      <Filter>engin\ソース ファイル\3d\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\FBX\FBXModel.cpp">
+      <Filter>engin\ソース ファイル\3d\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="engine\3d\FBX\FBXObject3d.cpp">
+      <Filter>engin\ソース ファイル\3d\FBX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="SpriteVS.hlsl">
-      <Filter>engin\リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="BasicPS.hlsl">
-      <Filter>engin\リソース ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="BasicVS.hlsl">
-      <Filter>engin\リソース ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
       <Filter>engin\リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
       <Filter>engin\リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="SpritePS.hlsl">
+    <FxCompile Include="Resources\shaders\BasicPS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\BasicVS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXPS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\FBXVS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ParticleGS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ParticlePS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\ParticleVS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\SpritePS.hlsl">
+      <Filter>engin\リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\SpriteVS.hlsl">
       <Filter>engin\リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\shaders\Basic.hlsli">
-      <Filter>engin\リソース ファイル</Filter>
-    </None>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli">
       <Filter>engin\リソース ファイル</Filter>
     </None>
-    <None Include="Sprite.hlsli">
+    <None Include="Resources\shaders\Basic.hlsli">
+      <Filter>engin\リソース ファイル</Filter>
+    </None>
+    <None Include="Resources\shaders\FBX.hlsli">
+      <Filter>engin\リソース ファイル</Filter>
+    </None>
+    <None Include="Resources\shaders\Particle.hlsli">
+      <Filter>engin\リソース ファイル</Filter>
+    </None>
+    <None Include="Resources\shaders\Sprite.hlsli">
       <Filter>engin\リソース ファイル</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameScene.h">
-      <Filter>user\ヘッダー</Filter>
-    </ClInclude>
     <ClInclude Include="engine\input\Input.h">
       <Filter>engin\ヘッダー ファイル\input</Filter>
     </ClInclude>
@@ -145,14 +241,68 @@
     <ClInclude Include="engine\2d\Sprite.h">
       <Filter>engin\ヘッダー ファイル\2d</Filter>
     </ClInclude>
-    <ClInclude Include="engine\2d\SpriteCommon.h">
-      <Filter>engin\ヘッダー ファイル\2d</Filter>
-    </ClInclude>
     <ClInclude Include="engine\3d\Model.h">
       <Filter>engin\ヘッダー ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="engine\3d\Object3d.h">
       <Filter>engin\ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Affin.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\ConvertXM.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Matrix4.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector2.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\math\Vector3.h">
+      <Filter>engin\ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="object\Bullet.h">
+      <Filter>user\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="object\Enemy.h">
+      <Filter>user\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="object\EnemyBullet.h">
+      <Filter>user\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Transform.h">
+      <Filter>engin\ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\View.h">
+      <Filter>engin\ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="object\Player.h">
+      <Filter>user\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\Particle\ParticleManager.h">
+      <Filter>engin\ヘッダー ファイル\3d\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\camera\DebugCamera.h">
+      <Filter>engin\ヘッダー ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\GameScene.h">
+      <Filter>user\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\2d\SpriteCommon.h">
+      <Filter>engin\ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\camera\Camera.h">
+      <Filter>engin\ヘッダー ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\FBX\FbxLoader.h">
+      <Filter>engin\ヘッダー ファイル\3d\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\FBX\FBXModel.h">
+      <Filter>engin\ヘッダー ファイル\3d\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="engine\3d\FBX\FBXObject3d.h">
+      <Filter>engin\ヘッダー ファイル\3d\FBX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
