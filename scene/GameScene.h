@@ -99,6 +99,9 @@ private: // メンバ変数
 	Sprite* sprite2 = new Sprite();
 	XMFLOAT2 position2 = sprite2->GetPosition();
 
+	Sprite* clearSP = new Sprite();
+	XMFLOAT2 position3 = clearSP->GetPosition();
+
 	Sprite* titleSP = new Sprite();
 	XMFLOAT2 titlePOS = titleSP->GetPosition();
 	Sprite* endSP = new Sprite();
@@ -198,8 +201,10 @@ private: // メンバ変数
 	int isDireFlag = 0;
 
 	int isHit;
-	int HP = 10;
-	
+	int HP = 15;
+	//左右移動してる時は頭はだせない
+	int isAction = 0;
+
 
 };
 

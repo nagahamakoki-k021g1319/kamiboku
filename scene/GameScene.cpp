@@ -76,6 +76,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		sprite2->SetPozition(position2);
 		sprite2->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
+		clearSP->Initialize(spriteCommon);
+		position3.x = 0.0f;
+		clearSP->SetPozition(position3);
+		clearSP->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
+
 		titleSP->Initialize(spriteCommon);
 		titleSP->SetPozition(titlePOS);
 		titleSP->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
@@ -102,10 +107,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		endSP->SetTextureIndex(4);
 		spriteCommon->LoadTexture(5, "2Dret.png");
 		retSP->SetTextureIndex(5);
+		spriteCommon->LoadTexture(6, "clear.png");
+		clearSP->SetTextureIndex(6);
 	}
 	// OBJからモデルデータを読み込み
 	{
-		model = Model::LoadFromOBJ("as");
+		model = Model::LoadFromOBJ("playerRun");
 		model2 = Model::LoadFromOBJ("eneBL");
 		reticleMD = Model::LoadFromOBJ("cube");
 		zangoMD = Model::LoadFromOBJ("zango");
@@ -135,7 +142,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	// オブジェクトにモデルを紐づける
 	{
 		homeOBJ->SetModel(model);
-		player->SetModel(model2);
+		player->SetModel(model);
 		reticle->SetModel(reticleMD);
 		zango->SetModel(zangoMD);
 		floor->SetModel(floorMD);
@@ -156,6 +163,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		PopPos_[4]->wtf.position = Vector3{ -150,0,0 };
 	}
 	{
+		player->wtf.scale = Vector3{ 0.5,0.5,0.5 };
 		homeOBJ->wtf.scale = Vector3{ 3,3,3 };
 		zango->wtf.scale = (Vector3{ 45, 4.2f, 45 });
 		skydome->wtf.scale = (Vector3{ 1000, 1000, 1000 });
@@ -182,8 +190,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 	}
 
-	//fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("playerRun");
-	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
+	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("playerRun");
+	//fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
 	fbxModel2_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
 
 	// デバイスをセット
@@ -261,7 +269,7 @@ void GameScene::Update() {
 		waitTimer = 250;
 		isMove = 0;
 		isUP = false;
-		HP = 10;
+		HP = 15;
 
 		break;
 
@@ -277,10 +285,34 @@ void GameScene::Update() {
 			Ebullet->OnColision();
 		}*/
 		for (const std::unique_ptr<Bullet>& bullet : bullets_) {
-				for (const std::unique_ptr<EnemyBullet>& enebullet : eneBullets_) {
-						bullet->OnColision();
-						enebullet->OnColision();
-				}
+			for (const std::unique_ptr<EnemyBullet>& enebullet : eneBullets_) {
+				bullet->OnColision();
+				enebullet->OnColision();
+			}
+		}
+		//デスフラグの立った弾を削除
+		bullets_.remove_if([](std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); });
+		//デスフラグの立った弾を削除
+		eneBullets_.remove_if(
+			[](std::unique_ptr<EnemyBullet>& bullet) { return bullet->IsDead(); });
+		break;
+
+	case 4: // end
+		if (input->TriggerKey(DIK_SPACE)) {
+			scene = 0;
+			isUP = false;
+		}
+		for (int i = 0; i < _countof(enemys); i++) {
+			enemys[i].OnColision();
+		}
+		/*for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
+			Ebullet->OnColision();
+		}*/
+		for (const std::unique_ptr<Bullet>& bullet : bullets_) {
+			for (const std::unique_ptr<EnemyBullet>& enebullet : eneBullets_) {
+				bullet->OnColision();
+				enebullet->OnColision();
+			}
 		}
 		//デスフラグの立った弾を削除
 		bullets_.remove_if([](std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); });
@@ -407,7 +439,7 @@ void GameScene::Update() {
 	case 2: // game
 		isDireFlag = 0;
 		isHit = 0;
-
+		isAction = 0;
 		// オブジェクト移動
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_A))
 		{
@@ -418,20 +450,23 @@ void GameScene::Update() {
 			/*if (input->PushKey(DIK_UP)) { rotate.x += 0.5f; }
 			else if (input->PushKey(DIK_DOWN)) { rotate.x -= 0.5f; }*/
 
+
 			if (input->PushKey(DIK_RIGHT)) {
 				isDireFlag = 2;
 				rotate.y += 1.0f;
+				isAction = 1;
 			}
 			if (input->PushKey(DIK_LEFT)) {
 				isDireFlag = 1;
 				rotate.y -= 1.0f;
+				isAction = 1;
 			}
 
 
 			// 座標の変更を反映
 
 			homeOBJ->wtf.rotation = rotate;
-			fbxObject3d_->wtf.rotation = rotate+rotate;
+			//player->wtf.rotation = rotate;
 		}
 		homeOBJ->Update();
 		player->Update();
@@ -458,20 +493,23 @@ void GameScene::Update() {
 
 
 		{
-			
+
 			Reticle3D();
 			if (burstCoolTime < 0) {
 				if (cameraState == 0 || cameraState == 1) {
 					if (input->PushKey(DIK_Q)) {
-						//zango->wtf.position.y = -1;
-						isUP = true;
+						if (isAction == 0) {
+							//zango->wtf.position.y = -1;
+							isUP = true;
 
-						Attack();
-
+							Attack();
+							isAction = 1;
+						}
 					}
 					else {
 						zango->wtf.position.y = 2;
 						isUP = false;
+						isAction = 0;
 					}
 				}
 			}
@@ -526,7 +564,7 @@ void GameScene::Update() {
 					if (wave < 3) {
 						wave++;
 						if (wave == 3) {
-							popCount = 40;
+							scene = 4;
 						}
 						else if (wave == 2) {
 							popCount = 30;
@@ -537,7 +575,7 @@ void GameScene::Update() {
 						waitTimer = 100;
 					}
 					else if (wave == 3) {
-						scene = 3;
+						scene = 4;
 					}
 				}
 			}
@@ -670,7 +708,7 @@ void GameScene::Update() {
 		}
 		//当たり判定 eBullet->player
 		{
-			if (isUP==true && cameraState == 0 || cameraState == 1) {
+			if (isUP == true && cameraState == 0 || cameraState == 1) {
 				//判定対象aとbの座標
 				Vector3 posA, posB;
 
@@ -710,7 +748,7 @@ void GameScene::Update() {
 		}
 		//当たり判定 eBullet->zango
 		{
-			if (isUP==false || cameraState == 2 || cameraState == 3) {
+			if (isUP == false || cameraState == 2 || cameraState == 3) {
 
 
 				//判定対象aとbの座標
@@ -817,13 +855,13 @@ void GameScene::Update() {
 			if (cameraState == 0) {
 				isMove = 0;
 				//ai = Affin::GetWorldTrans(player->wtf.matWorld);
-				if (input->PushKey(DIK_Q)) {
+				if (isUP == true) {
 					ai = {
 					 Affin::GetWorldTrans(player->wtf.matWorld).x,
 					 Affin::GetWorldTrans(player->wtf.matWorld).y + 5,
 					 Affin::GetWorldTrans(player->wtf.matWorld).z
-
 					};
+					isAction = 1;
 				}
 				else {
 					ai = {
@@ -921,6 +959,9 @@ void GameScene::Draw() {
 	case 3:// end
 		endSP->Draw();
 		break;
+	case 4:
+		clearSP->Draw();
+		break;
 	case 1:// 
 		//3Dオブジェクト描画前処理
 		Object3d::PreDraw(dxCommon->GetCommandList());
@@ -976,7 +1017,7 @@ void GameScene::Draw() {
 
 		//3Dオブジェクトの描画
 		//homeOBJ->Draw();
-		//player->Draw();
+		player->Draw();
 
 
 
@@ -1003,7 +1044,7 @@ void GameScene::Draw() {
 		//3Dオブジェクト描画後処理
 		Object3d::PostDraw();
 
-		fbxObject3d_->Draw(dxCommon->GetCommandList());
+		//fbxObject3d_->Draw(dxCommon->GetCommandList());
 		fbxObject3d_2->Draw(dxCommon->GetCommandList());
 
 		// 3Dオブジェクト描画前処理

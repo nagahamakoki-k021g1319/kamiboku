@@ -316,7 +316,7 @@ void FbxLoader::ParseMeshFaces(FBXModel* fbxmodel, FbxMesh* fbxMesh)
     for (int i = 0; i < polygonCount; i++) {
         // 面を構成する頂点の数を取得（3なら三角形ポリゴン)
         const int polygonSize = fbxMesh->GetPolygonSize(i);
-        assert(polygonSize <= 4);
+        assert(polygonSize <= 32);
 
         // 1頂点ずつ処理
         for (int j = 0; j < polygonSize; j++) {
