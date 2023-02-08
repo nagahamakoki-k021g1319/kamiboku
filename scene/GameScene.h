@@ -220,21 +220,28 @@ private: // メンバ変数
 	XMFLOAT2 position6 = sprite6->GetPosition();
 	int isRightFlag = 0;
 
-	//コンパス
-	Sprite* sprite7 = new Sprite();
-	XMFLOAT2 position7 = sprite7->GetPosition();
-	Object3d* object3d_3 = nullptr;
-	Model* model3 = nullptr;
-
-	//潜る撃つ
+	//上
 	Sprite* sprite8 = new Sprite();
 	XMFLOAT2 position8 = sprite8->GetPosition();
 	Sprite* sprite9 = new Sprite();
 	XMFLOAT2 position9 = sprite9->GetPosition();
+	int isUpFlag = 0;
+
+	//コンパス
+	Sprite* sprite7 = new Sprite();
+	XMFLOAT2 position7 = sprite7->GetPosition();
+	Sprite* sprite15 = new Sprite();
+	XMFLOAT2 position15 = sprite15->GetPosition();
+	float rotatte=0;
+
+	
 
 	//切り替えボタン
 	Sprite* sprite10 = new Sprite();
 	XMFLOAT2 position10 = sprite10->GetPosition();
+	Sprite* sprite16 = new Sprite();
+	XMFLOAT2 position16 = sprite16->GetPosition();
+
 
 	//ブラックアウト
 	Sprite* sprite12 = new Sprite();
@@ -246,9 +253,11 @@ private: // メンバ変数
 	int isSHFlag = 0;
 	int SHtimer = 0;
 
+	
 	//音関係まとめ
 	int isDrornFlag = 0;
 	int isChangeDrornTimer = 0;
+	int isChangeDrornTimer2 = 0;
 	int soundCheckFlag = 0;
 	int soundCheckFlag2 = 0;
 };
