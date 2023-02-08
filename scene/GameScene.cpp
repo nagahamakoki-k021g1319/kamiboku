@@ -77,8 +77,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		sprite2->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
 		clearSP->Initialize(spriteCommon);
-		position3.x = 0.0f;
-		clearSP->SetPozition(position3);
+		clearPOS.x = 0.0f;
+		clearSP->SetPozition(clearPOS);
 		clearSP->SetSize(XMFLOAT2{ WinApp::window_width,WinApp::window_height });
 
 		titleSP->Initialize(spriteCommon);
@@ -92,6 +92,79 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		retPOS = XMFLOAT2{ (WinApp::window_width - 100) / 2,(WinApp::window_height - 100) / 2 };
 		retSP->SetPozition(retPOS);
 		//retSP->SetSize(XMFLOAT2{ WinApp::window_width / 5,WinApp::window_height / 10 });
+
+		sprite3->Initialize(spriteCommon);
+		position3.x = 50.0f;
+		position3.y = 600.0f;
+		sprite3->SetPozition(position3);
+		sprite3->SetSize(XMFLOAT2{ 50.0f,35.0f });
+
+		sprite4->Initialize(spriteCommon);
+		position4.x = 50.0f;
+		position4.y = 600.0f;
+		sprite4->SetPozition(position4);
+		sprite4->SetSize(XMFLOAT2{ 50.0f,35.0f });
+
+		sprite5->Initialize(spriteCommon);
+		position5.x = 100.0f;
+		position5.y = 600.0f;
+		sprite5->SetPozition(position5);
+		sprite5->SetSize(XMFLOAT2{ 50.0f,35.0f });
+
+		sprite6->Initialize(spriteCommon);
+		position6.x = 100.0f;
+		position6.y = 600.0f;
+		sprite6->SetPozition(position6);
+		sprite6->SetSize(XMFLOAT2{ 50.0f,35.0f });
+
+		sprite7->Initialize(spriteCommon);
+		position7.x = 1150.0f;
+		position7.y = 30.0f;
+		sprite7->SetPozition(position7);
+		sprite7->SetSize(XMFLOAT2{ 100.0f,100.0f });
+
+		sprite8->Initialize(spriteCommon);
+		position8.x = 83.0f;
+		position8.y = 560.0f;
+		sprite8->SetPozition(position8);
+		sprite8->SetSize(XMFLOAT2{ 35.0f,50.0f });
+
+		sprite9->Initialize(spriteCommon);
+		position9.x = 83.0f;
+		position9.y = 560.0f;
+		sprite9->SetPozition(position9);
+		sprite9->SetSize(XMFLOAT2{ 35.0f,50.0f });
+
+		sprite10->Initialize(spriteCommon);
+		position10.x = 25.0f;
+		position10.y = 25.0f;
+		sprite10->SetPozition(position10);
+		sprite10->SetSize(XMFLOAT2{ 150.0f,115.0f });
+
+		sprite12->Initialize(spriteCommon);
+		sprite12->SetPozition(position12);
+		sprite12->SetSize(XMFLOAT2{ 1280.0f,720.0f });
+
+		sprite13->Initialize(spriteCommon);
+		sprite13->SetPozition(position13);
+		sprite13->SetSize(XMFLOAT2{ 1280.0f,720.0f });
+
+		sprite14->Initialize(spriteCommon);
+		sprite14->SetPozition(position14);
+		sprite14->SetSize(XMFLOAT2{ 1280.0f,720.0f });
+
+		sprite15->Initialize(spriteCommon);
+		position15.x = 1200.0f;
+		position15.y = 80.0f;
+		sprite15->SetPozition(position15);
+		sprite15->SetSize(XMFLOAT2{ 30.0f,30.0f });
+
+		sprite16->Initialize(spriteCommon);
+		position16.x = 25.0f;
+		position16.y = 25.0f;
+		sprite16->SetPozition(position16);
+		sprite16->SetSize(XMFLOAT2{ 150.0f,115.0f });
+
 	}
 	//スプライトの画像指定
 	{
@@ -107,8 +180,34 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		endSP->SetTextureIndex(4);
 		spriteCommon->LoadTexture(5, "2Dret.png");
 		retSP->SetTextureIndex(5);
-		spriteCommon->LoadTexture(6, "clear.png");
-		clearSP->SetTextureIndex(6);
+		spriteCommon->LoadTexture(6, "hi.png");
+		sprite3->SetTextureIndex(6);
+		spriteCommon->LoadTexture(7, "hida.png");
+		sprite4->SetTextureIndex(7);
+		spriteCommon->LoadTexture(8, "mi.png");
+		sprite5->SetTextureIndex(8);
+		spriteCommon->LoadTexture(9, "migi.png");
+		sprite6->SetTextureIndex(9);
+		spriteCommon->LoadTexture(12, "konpas.png");
+		sprite7->SetTextureIndex(12);
+		spriteCommon->LoadTexture(10, "u.png");
+		sprite8->SetTextureIndex(10);
+		spriteCommon->LoadTexture(11, "ue.png");
+		sprite9->SetTextureIndex(11);
+		spriteCommon->LoadTexture(13, "e1.png");
+		sprite10->SetTextureIndex(13);
+		spriteCommon->LoadTexture(14, "sh.png");
+		sprite12->SetTextureIndex(14);
+		spriteCommon->LoadTexture(15, "sh1.png");
+		sprite13->SetTextureIndex(15);
+		spriteCommon->LoadTexture(16, "sh2.png");
+		sprite14->SetTextureIndex(16);
+		spriteCommon->LoadTexture(17, "yazi1.png");
+		sprite15->SetTextureIndex(17);
+		spriteCommon->LoadTexture(18, "e2.png");
+		sprite16->SetTextureIndex(18);
+		spriteCommon->LoadTexture(19, "clear.png");
+		clearSP->SetTextureIndex(19);
 	}
 	// OBJからモデルデータを読み込み
 	{
@@ -224,8 +323,13 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	audio->Initialize();
 
 	audio->LoadWave("gate.wav");
-	audio->LoadWave("mm.wav");
+	audio->LoadWave("tt.wav");
+	audio->LoadWave("bb.wav");
 
+	isDrornFlag = 0;
+	audio->LoadWave("one.wav");
+	audio->LoadWave("her.wav");
+	audio->LoadWave("oka.wav");
 
 }
 
@@ -245,6 +349,12 @@ void GameScene::Update() {
 	switch (scene)
 	{
 	case 0:// title
+		//音声再生
+		if (soundCheckFlag == 0) {
+			//音声再生
+			pSourceVoice[0] = audio->PlayWave("tt.wav");
+			soundCheckFlag = 1;
+		}
 		if (input->TriggerKey(DIK_SPACE)) {
 			scene = 1;
 		}
@@ -271,6 +381,7 @@ void GameScene::Update() {
 		isUP = false;
 		HP = 15;
 
+		rotatte = -135;
 		break;
 
 	case 3: // end
@@ -295,6 +406,8 @@ void GameScene::Update() {
 		//デスフラグの立った弾を削除
 		eneBullets_.remove_if(
 			[](std::unique_ptr<EnemyBullet>& bullet) { return bullet->IsDead(); });
+		soundCheckFlag = 0;
+		soundCheckFlag2 = 0;
 		break;
 
 	case 4: // end
@@ -319,6 +432,8 @@ void GameScene::Update() {
 		//デスフラグの立った弾を削除
 		eneBullets_.remove_if(
 			[](std::unique_ptr<EnemyBullet>& bullet) { return bullet->IsDead(); });
+		soundCheckFlag = 0;
+		soundCheckFlag2 = 0;
 		break;
 
 	case 1:// info()	
@@ -333,6 +448,12 @@ void GameScene::Update() {
 		nowCount++;
 
 		if (input->TriggerKey(DIK_E) && isMove == 0) {
+			pSourceVoice[0]->Stop();
+			if (soundCheckFlag2 == 0) {
+				//音声再生
+				pSourceVoice[1] = audio->PlayWave("bb.wav");
+				soundCheckFlag2 = 1;
+			}
 			startCount = nowCount;
 			isMove = 1;
 			switch (cameraState)
@@ -434,14 +555,12 @@ void GameScene::Update() {
 
 	break;
 
-
-
 	case 2: // game
 		isDireFlag = 0;
 		isHit = 0;
 		isAction = 0;
 		// オブジェクト移動
-		if (input->PushKey(DIK_W) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_A))
+		if (input->PushKey(DIK_UP) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_A))
 		{
 			// 現在の座標を取得
 			Vector3 rotate = homeOBJ->wtf.rotation;
@@ -468,6 +587,23 @@ void GameScene::Update() {
 			homeOBJ->wtf.rotation = rotate;
 			//player->wtf.rotation = rotate;
 		}
+		isLeftFlag = 0;
+		if (input->PushKey(DIK_LEFT)) {
+			isLeftFlag = 1;
+			rotatte += -1.0f;
+		}
+		isRightFlag = 0;
+		if (input->PushKey(DIK_RIGHT)) {
+			isRightFlag = 1;
+			rotatte += 1.0f;
+		}
+		isUpFlag = 0;
+		if (input->PushKey(DIK_UP)) {
+			isUpFlag = 1;
+		}
+
+		sprite15->SetRotation(rotatte);
+
 		homeOBJ->Update();
 		player->Update();
 		zango->Update();
@@ -664,40 +800,6 @@ void GameScene::Update() {
 
 					//弾と弾の交差判定
 					if (distance <= matA.m[0][0] + matB.m[0][0]) {	//スケールxを半径として使用
-
-
-						//パーティクル範囲
-						{
-							//for (int j = 0; j < 20; j++) {
-							//	//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-							//	const float rnd_pos = 3.03f;
-							//	//const float rnd_posX = 1.0f;
-							//	XMFLOAT3 pos = ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(enemys[i].obj3d.wtf.matWorld));
-							//	pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-							//	pos.y = 1;
-							//	pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-
-							//	//速度
-							//	//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
-							//	const float rnd_vel = 0.5f;
-							//	XMFLOAT3 vel{};
-							//	vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-							//	vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-							//	vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-							//	//重力に見立ててYのみ[-0.001f,0]でランダムに分布
-							//	const float rnd_acc = -0.01f;
-							//	const float rnd_acc_v = -0.01f;
-							//	XMFLOAT3 acc{};
-							//	acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-							//	acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-							//	//acc.z = (float)rand() / RAND_MAX * rnd_acc;
-
-							//	//追加
-							//	particleManager->Add(100, pos, vel, acc, 1.0f, 0.0f);
-
-							//}
-						}
-
 						enemys[i].OnColision();
 						bullet->OnColision();
 					}
@@ -797,6 +899,9 @@ void GameScene::Update() {
 					cameraState = 1;
 					break;
 				case 2:
+					if (isSHFlag == 0) {
+						isSHFlag = 1;
+					}
 					cameraState = 3;
 					break;
 				}
@@ -886,9 +991,52 @@ void GameScene::Update() {
 			}
 		}
 
+		{
+			if (input->TriggerKey(DIK_E)) {
+				if (isDrornFlag == 0) {
+					pSourceVoice[0] = audio->PlayWave("one.wav");
+					pSourceVoice[0]->SetVolume(0.8f);
+					pSourceVoice[1] = audio->PlayWave("her.wav");
+					pSourceVoice[1]->SetVolume(0.5f);
+					isDrornFlag = 1;
+				}
+				else if (isDrornFlag == 1) {
+					pSourceVoice[2] = audio->PlayWave("oka.wav");
+					pSourceVoice[2]->SetVolume(0.8f);
+					pSourceVoice[1] = audio->PlayWave("her.wav");
+					pSourceVoice[1]->SetVolume(0.5f);
+					isDrornFlag = 2;
+				}
+
+			}
+			if (isDrornFlag == 1) {
+				isChangeDrornTimer++;
+			}
+			else if (isDrornFlag == 2) {
+				isChangeDrornTimer2++;
+			}
+
+			if (isChangeDrornTimer > 80) {
+				isChangeDrornTimer = 0;
+				isDrornFlag = 1;
+			}
+			else if (isChangeDrornTimer2 > 80) {
+				isChangeDrornTimer2 = 0;
+				isDrornFlag = 0;
+			}
+
+			//ブラックアウト
+			if (isSHFlag == 1) {
+				SHtimer++;
+			}
+			if (SHtimer >= 10) {
+				SHtimer = 0;
+				isSHFlag = 0;
+			}
+		}
+
 
 		// パーティクル起動(長押し)
-
 		{
 			if (input->TriggerKey(DIK_P)) {
 
@@ -918,31 +1066,29 @@ void GameScene::Update() {
 					//acc.z = (float)rand() / RAND_MAX * rnd_acc;
 
 					//追加
-					particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+					//particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
 				}
 			}
-
 		}
 
-		// リセット
-		if (input->PushKey(DIK_R)) {
-			ischackFlag = 0;
-		}
-		//音声再生
-		if (input->TriggerKey(DIK_O)) {
-			//音声再生
-			audio->PlayWave("mm.wav");
-			soundCheckFlag = 1;
-		}
-		if (input->TriggerKey(DIK_K)) {
-			HP = 10;
-		}
-		if (input->TriggerKey(DIK_J)) {
-			HP = 4;
-		}
-		if (input->TriggerKey(DIK_H)) {
-			HP = 2;
-		}
+		//// リセット
+		//if (input->PushKey(DIK_R)) {
+		//	ischackFlag = 0;
+		//}
+		////音声再生
+		//if (input->TriggerKey(DIK_O)) {
+		//	//音声再生
+		//	audio->PlayWave("mm.wav");
+		//}
+		//if (input->TriggerKey(DIK_K)) {
+		//	HP = 10;
+		//}
+		//if (input->TriggerKey(DIK_J)) {
+		//	HP = 4;
+		//}
+		//if (input->TriggerKey(DIK_H)) {
+		//	HP = 2;
+		//}
 
 		break;
 	}
@@ -1003,12 +1149,6 @@ void GameScene::Draw() {
 		break;
 	case 2: // game
 
-
-
-
-
-
-
 		//3Dオブジェクト描画前処理
 		Object3d::PreDraw(dxCommon->GetCommandList());
 		/// <summary>
@@ -1018,13 +1158,11 @@ void GameScene::Draw() {
 		//3Dオブジェクトの描画
 		//homeOBJ->Draw();
 		player->Draw();
-
-
-
 		//reticle->Draw();
 		zango->Draw();
 		floor->Draw();
 		skydome->Draw();
+
 		for (int i = 0; i < _countof(enemys); i++) {
 			if (enemys[i].isDead == false) {
 				enemys[i].obj3d.Draw();
@@ -1041,8 +1179,50 @@ void GameScene::Draw() {
 		for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
 			Ebullet->obj3d.Draw();
 		}
+
 		//3Dオブジェクト描画後処理
 		Object3d::PostDraw();
+
+		// 移植スプライト
+
+		sprite7->Draw();
+		sprite15->Draw();
+		if (isLeftFlag == 0) {
+			sprite3->Draw();
+		}
+		else if (isLeftFlag == 1) {
+			sprite4->Draw();
+		}
+		if (isRightFlag == 0) {
+			sprite5->Draw();
+		}
+		else if (isRightFlag == 1) {
+			sprite6->Draw();
+		}
+		if (isUpFlag == 0) {
+			sprite8->Draw();
+		}
+		else if (isUpFlag == 1) {
+			sprite9->Draw();
+		}
+
+		if (cameraState == 0) {
+			sprite10->Draw();
+		}
+		else if (cameraState == 2) {
+			sprite16->Draw();
+		}
+
+		if (SHtimer >= 1 && SHtimer <= 4) {
+			sprite14->Draw();
+		}
+		else if (SHtimer >= 5 && SHtimer <= 7) {
+			sprite13->Draw();
+		}
+		else if (SHtimer >= 8 && SHtimer <= 10) {
+			sprite12->Draw();
+		}
+		////////
 
 		//fbxObject3d_->Draw(dxCommon->GetCommandList());
 		fbxObject3d_2->Draw(dxCommon->GetCommandList());
@@ -1050,8 +1230,9 @@ void GameScene::Draw() {
 		// 3Dオブジェクト描画前処理
 		ParticleManager::PreDraw(dxCommon->GetCommandList());
 
-		// 3Dオブクジェクトの描画
-		particleManager->Draw();
+		
+		//// 3Dオブクジェクトの描画
+		// particleManager->Draw();
 
 		// 3Dオブジェクト描画後処理
 		ParticleManager::PostDraw();
