@@ -452,6 +452,7 @@ void GameScene::Update() {
 			if (soundCheckFlag2 == 0) {
 				//‰¹ºÄ¶
 				pSourceVoice[1] = audio->PlayWave("bb.wav");
+				pSourceVoice[1]->SetVolume(0.3f);
 				soundCheckFlag2 = 1;
 			}
 			startCount = nowCount;
