@@ -106,7 +106,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	// OBJからモデルデータを読み込み
 	{
 		model = Model::LoadFromOBJ("as");
-		model2 = Model::LoadFromOBJ("as2");
+		model2 = Model::LoadFromOBJ("eneBL");
 		reticleMD = Model::LoadFromOBJ("cube");
 		zangoMD = Model::LoadFromOBJ("zango");
 		eneMD = Model::LoadFromOBJ("ene");
@@ -157,7 +157,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	}
 	{
 		homeOBJ->wtf.scale = Vector3{ 3,3,3 };
-		zango->wtf.scale = (Vector3{ 45, 3.7f, 45 });
+		zango->wtf.scale = (Vector3{ 45, 4.2f, 45 });
 		skydome->wtf.scale = (Vector3{ 1000, 1000, 1000 });
 	}
 	//3Dオブジェクトを一回アップデート
@@ -182,6 +182,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 	}
 
+	//fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("playerRun");
 	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
 	fbxModel2_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
 
@@ -194,8 +195,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	fbxObject3d_ = new FBXObject3d;
 	fbxObject3d_->Initialize();
 	fbxObject3d_->SetModel(fbxModel_);
-	fbxObject3d_->SetScale({ 0.01,0.01,0.01 });
-	fbxObject3d_->SetPosition({ 0,10,40 });
+	fbxObject3d_->SetScale({ 0.025,0.025,0.025 });
+	fbxObject3d_->SetPosition({ 0,1,0 });
 	fbxObject3d_->PlayAnimation();
 
 	fbxObject3d_2 = new FBXObject3d;
@@ -222,9 +223,16 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 
 
 void GameScene::Update() {
+	particleManager->Update();
 	srand((unsigned)time(nullptr));
 	int popRand = rand() % 4 + 1;
 	camera->Update();
+	Vector3 PLfbxPos = {
+		Affin::GetWorldTrans(player->wtf.matWorld).x,
+		Affin::GetWorldTrans(player->wtf.matWorld).y - 5,
+		Affin::GetWorldTrans(player->wtf.matWorld).z
+	};
+	fbxObject3d_->SetPosition(PLfbxPos);
 
 	switch (scene)
 	{
@@ -252,7 +260,7 @@ void GameScene::Update() {
 		wave = 0;
 		waitTimer = 250;
 		isMove = 0;
-
+		isUP = false;
 		HP = 10;
 
 		break;
@@ -260,14 +268,25 @@ void GameScene::Update() {
 	case 3: // end
 		if (input->TriggerKey(DIK_SPACE)) {
 			scene = 0;
+			isUP = false;
 		}
 		for (int i = 0; i < _countof(enemys); i++) {
 			enemys[i].OnColision();
 		}
-		for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
+		/*for (std::unique_ptr<EnemyBullet>& Ebullet : eneBullets_) {
 			Ebullet->OnColision();
+		}*/
+		for (const std::unique_ptr<Bullet>& bullet : bullets_) {
+				for (const std::unique_ptr<EnemyBullet>& enebullet : eneBullets_) {
+						bullet->OnColision();
+						enebullet->OnColision();
+				}
 		}
-
+		//デスフラグの立った弾を削除
+		bullets_.remove_if([](std::unique_ptr<Bullet>& bullet) { return bullet->IsDead(); });
+		//デスフラグの立った弾を削除
+		eneBullets_.remove_if(
+			[](std::unique_ptr<EnemyBullet>& bullet) { return bullet->IsDead(); });
 		break;
 
 	case 1:// info()	
@@ -281,7 +300,7 @@ void GameScene::Update() {
 		// 移動完了の率（経過時間/全体時間） ：timeRate (%)
 		nowCount++;
 
-		if (input->TriggerKey(DIK_E)&&isMove==0) {
+		if (input->TriggerKey(DIK_E) && isMove == 0) {
 			startCount = nowCount;
 			isMove = 1;
 			switch (cameraState)
@@ -303,7 +322,7 @@ void GameScene::Update() {
 				break;
 			}
 		}
-
+		isUP = false;
 
 		elapsedCount = nowCount - startCount;
 		elapsedTime = static_cast<float> (elapsedCount) / 1.0f;
@@ -412,6 +431,7 @@ void GameScene::Update() {
 			// 座標の変更を反映
 
 			homeOBJ->wtf.rotation = rotate;
+			fbxObject3d_->wtf.rotation = rotate+rotate;
 		}
 		homeOBJ->Update();
 		player->Update();
@@ -420,7 +440,7 @@ void GameScene::Update() {
 		skydome->Update();
 		//敵ポップ
 		for (int i = 0; i < _countof(enemys); i++) {
-			enemys[i].Update(eneMD, Affin::GetWorldTrans(player->wtf.matWorld));
+			enemys[i].Update(model2, Affin::GetWorldTrans(player->wtf.matWorld));
 		}
 		for (int i = 0; i < 5; i++) {
 			PopPos_[i]->Update();
@@ -438,18 +458,20 @@ void GameScene::Update() {
 
 
 		{
+			
 			Reticle3D();
 			if (burstCoolTime < 0) {
 				if (cameraState == 0 || cameraState == 1) {
 					if (input->PushKey(DIK_Q)) {
-						zango->wtf.position.y = -1;
-						if (input->PushKey(DIK_SPACE))
-						{
-							Attack();
-						}
+						//zango->wtf.position.y = -1;
+						isUP = true;
+
+						Attack();
+
 					}
 					else {
 						zango->wtf.position.y = 2;
+						isUP = false;
 					}
 				}
 			}
@@ -604,38 +626,42 @@ void GameScene::Update() {
 
 					//弾と弾の交差判定
 					if (distance <= matA.m[0][0] + matB.m[0][0]) {	//スケールxを半径として使用
-						enemys[i].OnColision();
-						bullet->OnColision();
+
 
 						//パーティクル範囲
-						for (int i = 0; i < 50; i++) {
-							//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-							const float rnd_pos = 3.03f;
-							//const float rnd_posX = 1.0f;
-							XMFLOAT3 pos = ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(enemys[i].obj3d.wtf.matWorld));
-							pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-							pos.y = -10;
-							pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+						{
+							//for (int j = 0; j < 20; j++) {
+							//	//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+							//	const float rnd_pos = 3.03f;
+							//	//const float rnd_posX = 1.0f;
+							//	XMFLOAT3 pos = ConvertXM::ConvertVec3toXMFlo3(Affin::GetWorldTrans(enemys[i].obj3d.wtf.matWorld));
+							//	pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+							//	pos.y = 1;
+							//	pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
 
-							//速度
-							//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
-							const float rnd_vel = 0.5f;
-							XMFLOAT3 vel{};
-							vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-							vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-							vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-							//重力に見立ててYのみ[-0.001f,0]でランダムに分布
-							const float rnd_acc = -0.01f;
-							const float rnd_acc_v = -0.01f;
-							XMFLOAT3 acc{};
-							acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-							acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-							//acc.z = (float)rand() / RAND_MAX * rnd_acc;
+							//	//速度
+							//	//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+							//	const float rnd_vel = 0.5f;
+							//	XMFLOAT3 vel{};
+							//	vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+							//	vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+							//	vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+							//	//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+							//	const float rnd_acc = -0.01f;
+							//	const float rnd_acc_v = -0.01f;
+							//	XMFLOAT3 acc{};
+							//	acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+							//	acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+							//	//acc.z = (float)rand() / RAND_MAX * rnd_acc;
 
-							//追加
-							particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+							//	//追加
+							//	particleManager->Add(100, pos, vel, acc, 1.0f, 0.0f);
 
+							//}
 						}
+
+						enemys[i].OnColision();
+						bullet->OnColision();
 					}
 
 				}
@@ -644,7 +670,7 @@ void GameScene::Update() {
 		}
 		//当たり判定 eBullet->player
 		{
-			if (input->PushKey(DIK_Q) && cameraState == 0 || cameraState == 1) {
+			if (isUP==true && cameraState == 0 || cameraState == 1) {
 				//判定対象aとbの座標
 				Vector3 posA, posB;
 
@@ -684,7 +710,7 @@ void GameScene::Update() {
 		}
 		//当たり判定 eBullet->zango
 		{
-			if (!input->PushKey(DIK_Q) || cameraState == 2 || cameraState == 3) {
+			if (isUP==false || cameraState == 2 || cameraState == 3) {
 
 
 				//判定対象aとbの座標
@@ -790,7 +816,24 @@ void GameScene::Update() {
 			}
 			if (cameraState == 0) {
 				isMove = 0;
-				ai = Affin::GetWorldTrans(player->wtf.matWorld);
+				//ai = Affin::GetWorldTrans(player->wtf.matWorld);
+				if (input->PushKey(DIK_Q)) {
+					ai = {
+					 Affin::GetWorldTrans(player->wtf.matWorld).x,
+					 Affin::GetWorldTrans(player->wtf.matWorld).y + 5,
+					 Affin::GetWorldTrans(player->wtf.matWorld).z
+
+					};
+				}
+				else {
+					ai = {
+						 Affin::GetWorldTrans(player->wtf.matWorld).x,
+						 Affin::GetWorldTrans(player->wtf.matWorld).y,
+						 Affin::GetWorldTrans(player->wtf.matWorld).z
+
+					};
+
+				}
 				camera->SetFocalLengs(FLMAX);
 
 				camera->SetEye(ConvertXM::ConvertVec3toXMFlo3(ai));
@@ -807,40 +850,40 @@ void GameScene::Update() {
 
 
 		// パーティクル起動(長押し)
-		particleManager->Update();
+
 		{
-			//if (input->TriggerKey(DIK_P)) {
+			if (input->TriggerKey(DIK_P)) {
 
-			//	//パーティクル範囲
-			//	for (int i = 0; i < 50; i++) {
-			//		//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
-			//		const float rnd_pos = 0.03f;
-			//		//const float rnd_posX = 1.0f;
-			//		XMFLOAT3 pos{};
-			//		pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-			//		pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-			//		pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+				//パーティクル範囲
+				for (int j = 0; j < 50; j++) {
+					//X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+					const float rnd_pos = 0.03f;
+					//const float rnd_posX = 1.0f;
+					XMFLOAT3 pos{};
+					pos.x += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+					pos.y += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
+					pos.z += (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
 
-			//		//速度
-			//		//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
-			//		const float rnd_vel = 0.5f;
-			//		XMFLOAT3 vel{};
-			//		vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			//		vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			//		vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			//		//重力に見立ててYのみ[-0.001f,0]でランダムに分布
-			//		const float rnd_acc = -0.01f;
-			//		const float rnd_acc_v = -0.01f;
-			//		XMFLOAT3 acc{};
-			//		acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-			//		acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
-			//		//acc.z = (float)rand() / RAND_MAX * rnd_acc;
+					//速度
+					//X,Y,Z全て[-0.05f,+0.05f]でランダムに分布
+					const float rnd_vel = 0.5f;
+					XMFLOAT3 vel{};
+					vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+					vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+					vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+					//重力に見立ててYのみ[-0.001f,0]でランダムに分布
+					const float rnd_acc = -0.01f;
+					const float rnd_acc_v = -0.01f;
+					XMFLOAT3 acc{};
+					acc.x = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+					acc.y = ((float)rand() / RAND_MAX * rnd_acc) * ((float)rand() / RAND_MAX * rnd_acc_v);
+					//acc.z = (float)rand() / RAND_MAX * rnd_acc;
 
-			//		//追加
-			//		particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
-			//	}
-			//}
-			//
+					//追加
+					particleManager->Add(10, pos, vel, acc, 1.0f, 0.0f);
+				}
+			}
+
 		}
 
 		// リセット
@@ -923,7 +966,7 @@ void GameScene::Draw() {
 
 
 
-		
+
 
 		//3Dオブジェクト描画前処理
 		Object3d::PreDraw(dxCommon->GetCommandList());
@@ -933,7 +976,7 @@ void GameScene::Draw() {
 
 		//3Dオブジェクトの描画
 		//homeOBJ->Draw();
-		player->Draw();
+		//player->Draw();
 
 
 
@@ -977,7 +1020,7 @@ void GameScene::Draw() {
 
 			sprite->Draw();
 		}
-		if (input->PushKey(DIK_Q) && cameraState == 0) {
+		if (isUP == true && cameraState == 0) {
 
 			retSP->Draw();
 		}
@@ -986,11 +1029,12 @@ void GameScene::Draw() {
 			sprite1->Draw();
 		}
 
-		if (cameraState==0 || cameraState == 1) {
-			if (HP < 6&&HP>=3) {
+		if (cameraState == 0 || cameraState == 1) {
+			if (HP < 6 && HP >= 3) {
 
 				sprite->Draw();
-			}else if(HP<3)
+			}
+			else if (HP < 3)
 			{
 				sprite2->Draw();
 			}

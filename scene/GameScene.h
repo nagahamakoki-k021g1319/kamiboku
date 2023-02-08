@@ -151,6 +151,7 @@ private: // メンバ変数
 	const float FLMAX = 90, FLMIN = 20;
 	const Vector3 MAXVec3 = { 0,150,0 }, MINVec3 = { 0,0,0 };
 	Vector3 ai;
+	bool isUP=false;
 
 	// 3Dレティクル用ワールドトランスフォーム
 	float kDistancePlayerTo3DReticle = -80.0f;
