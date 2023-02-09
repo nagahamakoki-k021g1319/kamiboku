@@ -125,6 +125,7 @@ private: // メンバ変数
 	Object3d* skydome = nullptr;
 	Model* model = nullptr;
 	Model* model2 = nullptr;
+	Model* model3 = nullptr;
 	Model* reticleMD = nullptr;
 	Model* zangoMD = nullptr;
 	Model* eneMD = nullptr;

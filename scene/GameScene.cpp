@@ -18,6 +18,7 @@ GameScene::~GameScene() {
 	//3Dƒ‚ƒfƒ‹‰ð•ú
 	delete model;
 	delete model2;
+	delete model3;
 	delete reticleMD;
 	delete zangoMD;
 	delete eneMD;
@@ -213,6 +214,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 	{
 		model = Model::LoadFromOBJ("playerRun");
 		model2 = Model::LoadFromOBJ("eneBL");
+		model3 = Model::LoadFromOBJ("playerStey");
 		reticleMD = Model::LoadFromOBJ("cube");
 		zangoMD = Model::LoadFromOBJ("zango");
 		eneMD = Model::LoadFromOBJ("ene");
@@ -353,6 +355,7 @@ void GameScene::Update() {
 		if (soundCheckFlag == 0) {
 			//‰¹ºÄ¶
 			pSourceVoice[0] = audio->PlayWave("tt.wav");
+			pSourceVoice[0]->SetVolume(0.1f);
 			soundCheckFlag = 1;
 		}
 		if (input->TriggerKey(DIK_SPACE)) {
@@ -452,7 +455,7 @@ void GameScene::Update() {
 			if (soundCheckFlag2 == 0) {
 				//‰¹ºÄ¶
 				pSourceVoice[1] = audio->PlayWave("bb.wav");
-				pSourceVoice[1]->SetVolume(0.3f);
+				pSourceVoice[1]->SetVolume(0.1f);
 				soundCheckFlag2 = 1;
 			}
 			startCount = nowCount;
@@ -634,16 +637,18 @@ void GameScene::Update() {
 			Reticle3D();
 			if (burstCoolTime < 0) {
 				if (cameraState == 0 || cameraState == 1) {
-					if (input->PushKey(DIK_Q)) {
+					if (input->PushKey(DIK_UP)) {
 						if (isAction == 0) {
 							//zango->wtf.position.y = -1;
 							isUP = true;
 
 							Attack();
 							isAction = 1;
+							//player->SetModel(model3);
 						}
 					}
 					else {
+						//player->SetModel(model);
 						zango->wtf.position.y = 2;
 						isUP = false;
 						isAction = 0;
