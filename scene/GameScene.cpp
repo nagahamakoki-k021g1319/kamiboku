@@ -215,7 +215,12 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, GameScene* gam
 		model2 = Model::LoadFromOBJ("eneBL");
 		reticleMD = Model::LoadFromOBJ("cube");
 		zangoMD = Model::LoadFromOBJ("zango");
-		eneMD = Model::LoadFromOBJ("ene");
+		if (eneChangeFlag == 0) {
+			eneMD = Model::LoadFromOBJ("ene");
+		}
+		else if (eneChangeFlag == 1) {
+			eneMD = Model::LoadFromOBJ("ene2");
+		}
 		floorMD = Model::LoadFromOBJ("floor");
 		skydomeMD = Model::LoadFromOBJ("skydome");
 	}
@@ -452,7 +457,7 @@ void GameScene::Update() {
 			if (soundCheckFlag2 == 0) {
 				//音声再生
 				pSourceVoice[1] = audio->PlayWave("bb.wav");
-				pSourceVoice[1]->SetVolume(0.3f);
+				pSourceVoice[1]->SetVolume(0.1f);
 				soundCheckFlag2 = 1;
 			}
 			startCount = nowCount;
@@ -560,6 +565,17 @@ void GameScene::Update() {
 		isDireFlag = 0;
 		isHit = 0;
 		isAction = 0;
+		eneChangeTimer++;
+		if (eneChangeTimer >= 0 && eneChangeTimer <= 10) {
+			eneChangeFlag = 0;
+		}
+		else if (eneChangeTimer >= 11 && eneChangeTimer <= 20) {
+			eneChangeFlag = 1;
+		}
+		if (eneChangeTimer >= 20) {
+			eneChangeTimer = 0;
+		}
+
 		// オブジェクト移動
 		if (input->PushKey(DIK_UP) || input->PushKey(DIK_LEFT) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_A))
 		{
@@ -634,7 +650,7 @@ void GameScene::Update() {
 			Reticle3D();
 			if (burstCoolTime < 0) {
 				if (cameraState == 0 || cameraState == 1) {
-					if (input->PushKey(DIK_Q)) {
+					if (input->PushKey(DIK_UP)) {
 						if (isAction == 0) {
 							//zango->wtf.position.y = -1;
 							isUP = true;

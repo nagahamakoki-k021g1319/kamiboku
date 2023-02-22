@@ -130,6 +130,8 @@ private: // メンバ変数
 	Model* eneMD = nullptr;
 	Model* floorMD = nullptr;
 	Model* skydomeMD = nullptr;
+	int eneChangeFlag = 0;
+	int eneChangeTimer = 0;
 
 	FBXModel* fbxModel_ = nullptr;
 	FBXObject3d* fbxObject3d_ = nullptr;
