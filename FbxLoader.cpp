@@ -361,6 +361,10 @@ void FbxLoader::ParseMeshFaces(FBXModel* fbxmodel, FbxMesh* fbxMesh)
                 indices.push_back(index3);
                 indices.push_back(index0);
             }
+
+
+
+
         }
     }
 }
