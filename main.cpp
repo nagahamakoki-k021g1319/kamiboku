@@ -5,6 +5,8 @@
 #include "GameScene.h"
 #include "FbxLoader.h"
 
+#include "PostEffect.h"
+
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -16,6 +18,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	FPS* fps = new FPS;
 	Input* input = nullptr;
 	GameScene* gameScene = nullptr;
+	PostEffect* postEffect = nullptr;
+
 
 	//windowsAPIの初期化
 	winApp = new WinApp();
@@ -29,6 +33,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//入力の初期化　
 	input = new Input();
 	input->Initialize(winApp);
+
+	// ポストエフェクトの初期化
+	postEffect = new PostEffect();
+	postEffect->Initialize(dxCommon,1280,720);
 
 #pragma endregion
 
@@ -95,11 +103,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #pragma endregion
 
 #pragma region グラフィックスコマンド
+		postEffect->PreDrawScene(dxCommon->GetCommandList());
+		// ゲームシーンの描画
+		gameScene->Draw();
+		postEffect->PostDrawScene();
+
 
 		//4.描画コマンドここから
 		dxCommon->PreDraw(); 
-		// ゲームシーンの描画
-		gameScene->Draw();
+
+		postEffect->Draw(dxCommon->GetCommandList());
 		// 描画終了
 		dxCommon->PostDraw();
 
@@ -117,7 +130,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	delete gameScene;
 	//WindowsAPIの終了処理
 	winApp->Finalize();
-
+	postEffect->Finalize();
 	//入力開放
 	delete input;
 	//WindowsAPI開放

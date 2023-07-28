@@ -35,6 +35,15 @@ public://メンバ関数
 	//コマンドリスト取得
 	ID3D12GraphicsCommandList* GetCommandList()const { return commandList.Get(); }
 
+	//デスクリプタヒープ
+	ID3D12DescriptorHeap* GetDsvHeap() const { return dsvHeap.Get(); }
+
+	//デプスバッファ
+	ID3D12Resource* GetDepthBuff() const { return depthBuff.Get(); }
+
+	//バックバッファの数を取得
+	size_t GetBackBufferCount() const { return backBuffers.size(); }
+
 private:
 	//DirectX12デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> device;

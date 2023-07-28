@@ -40,7 +40,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	spriteCommon->Initialize(dxCommon);
 
 	// カメラ生成
-	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
+	camera = new Camera(1280, 720);
 	FBXObject3d::SetCamera(camera);
 
 
@@ -198,8 +198,8 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 		object3d_3->SetRotation({ 0,0,0 });
 	}
 
-	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
-	fbxModel2_ = FbxLoader::GetInstance()->LoadModelFromFile("Player");
+	fbxModel_ = FbxLoader::GetInstance()->LoadModelFromFile("strongAttack");
+	fbxModel2_ = FbxLoader::GetInstance()->LoadModelFromFile("player");
 
 	// デバイスをセット
 	FBXObject3d::SetDevice(dxCommon->GetDevice());
@@ -210,15 +210,15 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input) {
 	fbxObject3d_ = new FBXObject3d;
 	fbxObject3d_->Initialize();
 	fbxObject3d_->SetModel(fbxModel_);
-	fbxObject3d_->SetScale({ 0.01,0.01,0.01 });
-	fbxObject3d_->SetPosition({ 0,-10,40 });
+	fbxObject3d_->SetScale({ 4.08,4.08,4.08 });
+	fbxObject3d_->SetPosition({ 0,-15,40 });
 	fbxObject3d_->PlayAnimation();
 
 	fbxObject3d_2 = new FBXObject3d;
 	fbxObject3d_2->Initialize();
 	fbxObject3d_2->SetModel(fbxModel2_);
-	fbxObject3d_2->SetScale({ 0.01,0.01,0.01 });
-	fbxObject3d_2->SetPosition({ -10,-10,40 });
+	fbxObject3d_2->SetScale({ 0.08,0.08,0.08 });
+	fbxObject3d_2->SetPosition({ 0,-15,40 });
 	fbxObject3d_2->PlayAnimation();
 
 
@@ -396,60 +396,60 @@ void GameScene::Update() {
 }
 
 void GameScene::Draw() {
-	/*sprite->Draw();
-	sprite2->Draw();*/
+	///*sprite->Draw();
+	//sprite2->Draw();*/
 
-	sprite1->Draw();
+	//sprite1->Draw();
 
-	if (isLeftFlag == 0) {
-		sprite3->Draw();
-	}
-	else if (isLeftFlag == 1) {
-		sprite4->Draw();
-	}
+	//if (isLeftFlag == 0) {
+	//	sprite3->Draw();
+	//}
+	//else if (isLeftFlag == 1) {
+	//	sprite4->Draw();
+	//}
 
-	if (isRightFlag == 0) {
-		sprite5->Draw();
-	}
-	else if (isRightFlag == 1) {
-		sprite6->Draw();
-	}
-	sprite7->Draw();
+	//if (isRightFlag == 0) {
+	//	sprite5->Draw();
+	//}
+	//else if (isRightFlag == 1) {
+	//	sprite6->Draw();
+	//}
+	//sprite7->Draw();
 
-	sprite8->Draw();
+	//sprite8->Draw();
 
-	sprite9->Draw();
+	//sprite9->Draw();
 
-	sprite10->Draw();
+	//sprite10->Draw();
 
-	if (input->PushKey(DIK_SPACE)) {
-		sprite11->Draw();
-	}
+	//if (input->PushKey(DIK_SPACE)) {
+	//	sprite11->Draw();
+	//}
 
-	if (SHtimer >= 1 && SHtimer <= 4) {
-		sprite14->Draw();
-	}
-	else if (SHtimer >= 5 && SHtimer <= 7) {
-		sprite13->Draw();
-	}
-	else if (SHtimer >= 8 && SHtimer <= 10) {
-		sprite12->Draw();
-	}
+	//if (SHtimer >= 1 && SHtimer <= 4) {
+	//	sprite14->Draw();
+	//}
+	//else if (SHtimer >= 5 && SHtimer <= 7) {
+	//	sprite13->Draw();
+	//}
+	//else if (SHtimer >= 8 && SHtimer <= 10) {
+	//	sprite12->Draw();
+	//}
 
-	//3Dオブジェクト描画前処理
-	Object3d::PreDraw(dxCommon->GetCommandList());
-	/// <summary>
-	/// ここに3Dオブジェクトの描画処理を追加できる
-	/// <summary>
+	////3Dオブジェクト描画前処理
+	//Object3d::PreDraw(dxCommon->GetCommandList());
+	///// <summary>
+	///// ここに3Dオブジェクトの描画処理を追加できる
+	///// <summary>
 
-	//3Dオブジェクトの描画
-	object3d->Draw();
-	object3d_2->Draw();
-	object3d_3->Draw();
+	////3Dオブジェクトの描画
+	//object3d->Draw();
+	//object3d_2->Draw();
+	//object3d_3->Draw();
 
 	fbxObject3d_->Draw(dxCommon->GetCommandList());
-	fbxObject3d_2->Draw(dxCommon->GetCommandList());
 
+	/*fbxObject3d_2->Draw(dxCommon->GetCommandList());*/
 
 
 

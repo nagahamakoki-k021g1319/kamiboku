@@ -59,7 +59,7 @@ public: // メンバ関数
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	//FBXで使うカメラ(ビュープロジェクション?みたいな)
-	DebugCamera* camera = nullptr;
+	Camera* camera = nullptr;
 	Input* input = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	Audio* audio = nullptr;
